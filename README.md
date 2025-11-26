@@ -8,8 +8,7 @@
 
 ### **Project Description**
 
-ClipMark is a web-based application that allows users to save, store, and manage their bookmarks in one place. The platform helps users organize links, add notes, categorize them using tags, and retrieve them easily whenever needed.  
-This project continues the core functionality of our previous system but is presented under a new name for Phase 3.
+ClipMark is a web-based application that allows users to save, organize, and manage their bookmarks in a structured and convenient way. The platform enables users to store URLs, add notes, categorize their links using tags, and quickly retrieve saved content whenever needed. ClipMark provides a clean and user-friendly interface designed to simplify link management for research, learning, and daily browsing activities. 
 
 ---
 
