@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+:root {
+  --color-sky-aqua-50: #e9f9fc;
+  --color-sky-aqua-100: #d3f2f8;
+  --color-sky-aqua-200: #a6e5f2;
+  --color-sky-aqua-300: #7ad8eb;
+  --color-sky-aqua-400: #4ecbe4;
+  --color-sky-aqua-500: #21bede;
+  --color-sky-aqua-600: #1b98b1;
+  --color-sky-aqua-700: #147285;
+  --color-sky-aqua-800: #0d4c59;
+  --color-sky-aqua-900: #07262c;
+  --color-sky-aqua-950: #051b1f;
+}
