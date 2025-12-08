@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
+import Dashboard2 from "./pages/Dashboard2";
 
 function App() {
   const [data, setData] = useState(null);
@@ -24,7 +25,7 @@ function App() {
   return (
     <Router>
       {/* Your existing navbar component */}
-      <NavBar />
+      {/* <NavBar /> */}
 
       {/* Routes for all pages */}
       <div className="pt-0">
@@ -36,6 +37,7 @@ function App() {
           <Route path="/api/archived" element={<Archived />} />
           <Route path="/forgot" element={<ForgotPassword />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard2 />} />
         </Routes>
       </div>
 

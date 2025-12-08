@@ -1,14 +1,20 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun, Paperclip, User, LogOut } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
-  const [theme, setTheme] = useState(
-    localStorage.getItem('theme') || 'dark'
-  );
+export default function Navbar({ toggleSidebar, isSidebarOpen }) {
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
   // ✅ Temporary login state (replace later with real auth)
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isHomePage = location.pathname === "/";
+  const isDashboard = location.pathname === "/dashboard";
+
+  const goToDashboard = () => navigate("/dashboard");
 
   useEffect(() => {
     if (theme === "dark") {
@@ -16,7 +22,7 @@ export default function Navbar() {
     } else {
       document.documentElement.classList.remove("dark");
     }
-    localStorage.setItem('theme', theme);
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
@@ -30,29 +36,59 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="w-full shadow-lg transition-colors duration-300 h-16 px-6
+    <nav
+      className="w-full shadow-lg transition-colors duration-300 h-16 px-6
       bg-white/90 backdrop-blur-sm dark:bg-slate-900/90 dark:border-b dark:border-slate-700
-      flex items-center justify-between sticky top-0 z-50">
-
+      flex items-center justify-between sticky top-0 z-50"
+    >
       {/* Logo */}
-      <Link to="/" className="flex items-center gap-2">
+      {/* <Link to="/" className="flex items-center gap-2"> */}
+
+      <div className="flex items-center gap-2">
+        {isLoggedIn && (
+          <>
+            {/* <button
+              onClick={toggleSidebar}
+              className="flex items-center hover:opacity-80 transition"
+            >
+              CLICK ME
+            </button> */}
+
+            {/* <button
+                onClick={() => isSidebarOpen  ? toggleSidebar() : goToDashboard()}
+                // onClick={() =>  toggleSidebar() }
+                className="flex items-center hover:opacity-80 transition"
+              >
+                
+                CLICK ME
+              </button> */}
+            <button onClick={toggleSidebar} className="bg-[var(--color-sky-aqua-500)] p-2 rounded">
+              Toggle Sidebar
+              </button>
+          </>
+        )}
+
         <div
           className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#48CAE4] to-cyan-300 flex items-center justify-center
           text-slate-900 shadow-md shadow-[#48CAE4]/20"
         >
-          <Paperclip size={20} strokeWidth={2.5} className="transform -rotate-45" />
+          <Paperclip
+            size={20}
+            strokeWidth={2.5}
+            className="transform -rotate-45"
+          />
         </div>
         <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
           ClipMark
         </span>
-      </Link>
+      </div>
+
+      {/* </Link> */}
 
       {/* Right Section */}
       <div className="flex items-center gap-6">
-
         {/* Navigation Links */}
         <div className="hidden sm:flex items-center gap-6 font-medium">
-          
           {/* ❌ Show when NOT LOGGED IN */}
           {!isLoggedIn && (
             <>
@@ -93,14 +129,14 @@ export default function Navbar() {
                 to="/profile"
                 className="flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
               >
-                <User size={16}/> Profile
+                <User size={16} /> Profile
               </Link>
 
               <button
                 onClick={handleLogout}
                 className="flex items-center gap-1 text-red-500 hover:underline transition"
               >
-                <LogOut size={16}/> Logout
+                <LogOut size={16} /> Logout
               </button>
             </>
           )}
@@ -130,7 +166,6 @@ export default function Navbar() {
             Simulate Login
           </button>
         )}
-
       </div>
     </nav>
   );

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import BookmarkCard from "../components/BookmarkCard";
+import NavBar from "../components/NavBar";
+
 // import {
 //   fetchFavouriteBookmarks,
 //   updateBookmark,
@@ -63,6 +65,7 @@ function Favourites() {
         text-[var(--color-sky-aqua-900)]
       "
     >
+      <NavBar/>
       <div className="max-w-5xl mx-auto px-4 py-6 md:py-10">
         {/* Header */}
         <header className="mb-6 md:mb-8 flex items-center justify-between gap-3">

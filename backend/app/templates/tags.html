@@ -1,0 +1,106 @@
+{% extends 'welcome_base.html' %}
+
+
+
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='dist/output.css') }}" />
+<div class="max-w-7xl mx-auto mb-20">
+  <!-- Header Section -->
+  <div class="mb-8 mt-20">
+    <div class="flex flex-row gap-3 items-center">
+      <img src="{{ url_for('static', filename='icons/icon_tag.png') }}" class="w-8 h-8" alt="tag icon">
+          <h1 class="text-3xl font-bold text-lime-400 mb-2">
+        
+            Your Tags
+          </h1>
+    </div>
+
+    <p class="text-gray-400">Organize and filter your bookmarks by tags</p>
+  </div>
+
+  <!-- Stats Card -->
+<div class="flex flex-row gap-6 mb-6">
+
+  <!-- Total Tags Card -->
+  <div class="flex-1 bg-[#1A1A1A] rounded-lg p-6 border border-gray-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-gray-400 text-sm">Total Tags</p>
+        <p class="text-3xl font-bold text-white mt-1">{{ tags|length }}</p>
+      </div>
+    </div>
+  </div>
+
+  {% if tags and tags|length > 5 %}
+  <!-- Most Used Tags Card -->
+  <div class="flex-1 bg-[#1A1A1A] rounded-lg p-6 border border-gray-800">
+    <div class="flex flex-row items-center gap-3 mb-4">
+      <img src="{{ url_for('static', filename='icons/icon_tag.png') }}" class="w-6 h-6" alt="tag icon">
+      <h2 class="text-xl font-semibold text-white">Most Used Tags</h2>
+    </div>
+
+    <div class="flex flex-wrap gap-3">
+      {% for tag in tags[:5] %}
+      <a href="{{ url_for('bookmarks_api.list_bookmarks', tag=tag.name) }}"
+        class="inline-flex items-center px-4 py-2 bg-lime-500/10 hover:bg-lime-500/20 border border-lime-500/20 rounded-full text-lime-400 hover:text-lime-300 transition-all group">
+        <span class="font-medium">#{{ tag.name }}</span>
+        <span class="ml-2 px-2 py-0.5 bg-lime-500/20 rounded-full text-xs">{{ tag.count }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+
+  <!-- Tags Grid -->
+  {% if tags %}
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-10">
+    {% for tag in tags %}
+    <a href="{{ url_for('bookmarks_api.list_bookmarks', tag=tag.name) }}" 
+       class="group bg-[#1A1A1A] rounded-lg p-6 border border-gray-800 hover:border-lime-500 transition-all duration-300 hover:shadow-lg hover:shadow-lime-500/20">
+      <div class="flex items-center justify-between mb-4">
+        <div class="bg-lime-500/10 p-3 rounded-lg group-hover:bg-lime-500/20 transition-colors">
+          <img src="{{ url_for('static', filename='icons/icon_tag.png') }}" 
+       class="w-6 h-6" alt="tag icon">
+        </div>
+        <span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm font-medium">
+          {{ tag.count }}
+        </span>
+      </div>
+      
+      <h3 class="text-lg font-semibold text-white group-hover:text-lime-400 transition-colors mb-2">
+        #{{ tag.name }}
+      </h3>
+      
+      <p class="text-gray-400 text-sm">
+        {% if tag.count == 1 %}
+          1 bookmark
+        {% else %}
+          {{ tag.count }} bookmark
+        {% endif %}
+      </p>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <!-- Empty State -->
+  <div class="bg-[#1A1A1A] rounded-lg p-12 border border-gray-800 text-center">
+    <div class="bg-gray-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+      <i data-feather="tag" class="w-10 h-10 text-gray-600"></i>
+    </div>
+    <h3 class="text-xl font-semibold text-white mb-2">No tags yet</h3>
+
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Initialize feather icons after page load
+  document.addEventListener('DOMContentLoaded', function() {
+    feather.replace();
+  });
+</script>
+{% endblock %}

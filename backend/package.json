@@ -1,0 +1,39 @@
+{
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "tailwindcss": "^4.1.17"
+  },
+  "name": "linkvaultapi_02",
+  "description": "**Project Title**: LinkVault API – Bookmark & Tag Management System  \r **Project Description**:  \r Constructed a self-hosted bookmarking API that enables users to save, tag, and retrieve web links programmatically. The system supports duplicate detection, tag-based filtering, and CLI-based import/export in standard formats, functioning as a privacy-focused alternative to commercial bookmarking services.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "braces": "^3.0.3",
+    "detect-libc": "^1.0.3",
+    "enhanced-resolve": "^5.18.3",
+    "fill-range": "^7.1.1",
+    "graceful-fs": "^4.2.11",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "jiti": "^2.6.1",
+    "lightningcss": "^1.30.2",
+    "magic-string": "^0.30.21",
+    "micromatch": "^4.0.8",
+    "mri": "^1.2.0",
+    "node-addon-api": "^7.1.1",
+    "picocolors": "^1.1.1",
+    "picomatch": "^2.3.1",
+    "source-map-js": "^1.2.1",
+    "tapable": "^2.3.0",
+    "to-regex-range": "^5.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx @tailwindcss/cli -i app/static/src/input.css -o app/static/dist/output.css --minify"
+  },
+  
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

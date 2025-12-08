@@ -1,0 +1,69 @@
+{% extends "welcome_base.html" %}
+{% block title %}Archived Bookmarks{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='dist/output.css') }}" />
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='logo.ico') }}">
+
+<section class="max-w-7xl mx-auto mb-20">
+<h1 class="text-3xl font-bold text-[#b4ff39] mb-8 mt-20 ">Archived Bookmarks</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
+ {% for b in bookmarks %}
+ <div class="bg-[#1A1A1A] p-6 rounded-xl shadow-lg border border-gray-800 flex flex-col justify-between border border-gray-800 hover:border-lime-500 transition-all duration-300 hover:shadow-lg hover:shadow-lime-500/20">
+  <div class="mb-4 flex justify-between items-start">
+     <h2 class="text-xl font-semibold mb-2 text-white">{{ b.title }}</h2>
+     
+     <button title="Toggle Archive" class="hover:text-[#b4ff39] hover:cursor-pointer"
+      onclick="event.stopPropagation(); toggleArchive({{ b.id }}, {{ 'true' if b.archived else 'false' }})">
+     
+      {% if b.archived %}
+      <!-- Unarchive Icon -->
+      <i class="fa-solid fa-box-open text-yellow-400"></i>
+      {% else %}
+      <!-- Archive Icon -->
+      <i class="fa-solid fa-box-archive text-gray-400"></i>
+      {% endif %}
+     </button>
+  </div>
+
+  <a href="{{ http_url(b.url) }}" target="_blank"
+    class="text-gray-400 text-xl break-all hover:text-[#c1e328] transition" onclick="event.stopPropagation()">
+    🔗{{ b.url }}
+  </a>
+  
+
+
+ </div>
+ {% else %}
+ <p class="text-gray-400">No archived bookmarks.</p>
+ {% endfor %}
+</div>
+</section>
+<script>
+
+  const USER_ID = {{ user_id }};
+ async function toggleArchive(id, currentStatus) {
+   const newStatus = !currentStatus;
+
+   try {
+    const response = await fetch(`/api/bookmarks/${id}/archive?user_id=${USER_ID}`, {
+     method: "PATCH",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify({ archived: newStatus }),
+    });
+
+    if (response.ok) {
+     location.reload();
+    } else {
+     const error = await response.json();
+     alert(error.error || "Failed to toggle archive status.");
+    }
+   } catch (err) {
+    alert("Error toggling archive status: " + err.message);
+
+   }
+  }
+</script>
+{% endblock %}

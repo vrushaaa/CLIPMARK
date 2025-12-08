@@ -1,0 +1,53 @@
+# Python compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual env
+env/
+venv/
+.venv/
+
+# Flask instance and secrets
+instance/
+.flaskenv
+.env
+.env.local
+config_local.py
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.sqlite3
+*.db
+linkvault.db
+
+# Migrations (if you want clean DB in Docker)
+migrations/
+
+# Node modules (VERY IMPORTANT)
+node_modules/
+
+# Frontend build directories
+app/static/dist/
+dist/
+
+# Git
+.git/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Tailwind / Build generated
+npm-debug.log*
+yarn-debug.log*
+package-lock.json
+pnpm-lock.yaml

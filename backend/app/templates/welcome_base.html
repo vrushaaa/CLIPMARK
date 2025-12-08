@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}LinkVault{% endblock %}</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='logo.ico') }}">
+  <link
+    rel="stylesheet"
+    href="{{url_for('static' ,filename='dist/output.css')}}">
+
+  <style>
+    body {
+      background-color: #111;
+      color: #e5e5e5;
+      font-family: "Inter", sans-serif;
+    }
+
+    /* Soft neon glow */
+    .neon-hover:hover {
+      box-shadow: 0 0 12px rgba(180, 255, 57, 0.5);
+    }
+
+    /* Navigation underline animation */
+    .nav-link {
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: "";
+      position: absolute;
+      width: 0%;
+      height: 2px;
+      left: 0;
+      bottom: -4px;
+      background: #b4ff39;
+      transition: 0.3s;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- 🌐 NAVIGATION BAR -->
+  <nav class="fixed top-0 w-full z-50 border-b border-gray-800 bg-[#0b0b0b]/90 backdrop-blur-lg shadow-lg">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex justify-between items-center h-16">
+
+        <!-- Brand -->
+        <a href="{{ url_for('short.home') }}" class="text-2xl font-bold text-white tracking-tight">
+          <span class="text-[#b4ff39]">Link</span>Vault
+        </a>
+
+        <!-- Center Navigation -->
+        <div class="hidden md:flex items-center space-x-10 text-gray-300 font-medium">
+          <a href="{{ url_for('short.home') }}" class="nav-link hover:text-white">Home</a>
+          <a href="{{ url_for('bookmarks_api.dashboard2') }}" class="nav-link hover:text-white">Bookmarks</a>
+          <a href="{{ url_for('bookmarks_api.list_tags') }}" class="nav-link hover:text-white">Tags</a>
+          <a href="{{ url_for('bookmarks_api.archived_page') }}" class="nav-link hover:text-white">Archived</a>
+        </div>
+
+        <div class="flex items-center space-x-4">
+
+          <a href="{{ url_for('auth.logout') }}"
+             class="px-4 py-1.5 border border-[#b4ff39] text-[#b4ff39] rounded-lg 
+                    transition-all duration-200 hover:bg-[#b4ff39] hover:text-black neon-hover">
+            Logout
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 🔹 MAIN PAGE CONTENT -->
+  <main class="flex-1 px-6 mt-8">
+    {% block content %}
+    {% endblock %}
+  </main>
+</body>
+</html>
