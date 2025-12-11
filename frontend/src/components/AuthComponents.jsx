@@ -20,7 +20,7 @@ export const Button = ({ children, onClick, type = "button", isLoading = false }
 );
 
 // --- Input Component ---
-export const InputField = ({ label, type = "text", placeholder, icon: Icon, value, onChange, isDark }) => {
+export const InputField = ({ label, type = "text", name, placeholder, icon: Icon, value, onChange, isDark }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   
@@ -35,8 +35,9 @@ export const InputField = ({ label, type = "text", placeholder, icon: Icon, valu
         </div>
         <input
           type={isPassword && showPassword ? "text" : type}
-          value={value}
-          onChange={onChange}
+          name={name}                 // ← REQUIRED
+          value={value}               // ← REQUIRED
+          onChange={onChange}         // ← REQUIRED
           placeholder={placeholder}
           className={`w-full pl-10 pr-10 py-3 rounded-xl border-2 outline-none transition-all duration-300
             ${isDark 
@@ -44,6 +45,7 @@ export const InputField = ({ label, type = "text", placeholder, icon: Icon, valu
               : 'bg-white border-slate-200 text-slate-900 focus:border-[#48CAE4] placeholder-slate-400'
             } focus:ring-4 focus:ring-[#48CAE4]/10`}
         />
+
         {isPassword && (
           <button
             type="button"

@@ -4,12 +4,12 @@ import { NavLink } from "react-router-dom"; // Assuming react-router-dom is used
 
 export default function Sidebar() {
   const menuItems = [
-    { icon: Home, label: "Home", href: "/" },
-    { icon: Bookmark, label: "All Links", href: "/dashboard" },
-    { icon: Heart, label: "Favorites", href: "/favourites" },
-    { icon: Archive, label: "Archived", href: "/archived" },
-    { icon: Tag, label: "Tags", href: "/tags" },
-    { icon: Search, label: "Search", href: "/search" },
+    { icon: Home, label: "Home", href: "/api/dashboard" },
+    { icon: Bookmark, label: "All Links", href: "/api/bookmarks" },
+    { icon: Heart, label: "Favourites", href: "/api/favourites" },
+    { icon: Archive, label: "Archived", href: "/api/archived" },
+    { icon: Tag, label: "Tags", href: "/api/tags" },
+    { icon: Search, label: "Search", href: "/api/search" },
   ];
 
   // Placeholder function for logout
@@ -28,7 +28,7 @@ export default function Sidebar() {
     <aside className="w-full bg-[#1999b3] dark:bg-[#0d4c59] text-white min-h-screen flex flex-col">
       {/* Logo Top */}
       <div className="p-6 border-b border-white/10 dark:border-white/5">
-        <h2 className="text-2xl font-bold">ClipMark</h2>
+        <h2 className="text-2xl font-bold"></h2>
       </div>
 
       {/* Menu */}

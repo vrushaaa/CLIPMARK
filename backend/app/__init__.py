@@ -5,6 +5,9 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from config import Config
 import os
+from flask_cors import CORS
+
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -12,7 +15,11 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(
+        __name__
+    )
+
+    CORS(app, supports_credentials=True)
     
     app.config.from_object(Config)
 
@@ -22,6 +29,9 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+
+    login_manager.login_view = "None"
+    # login_manager.login_message_category = None
 
     
     @login_manager.user_loader

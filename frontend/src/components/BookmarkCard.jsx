@@ -1,4 +1,16 @@
-import React from "react";
+import React from "react";import {
+  Menu,
+  Plus,
+  QrCode,
+  Trash2,
+  Edit2,
+  Archive,
+  ArchiveRestore,
+  Search,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 
 function BookmarkCard({
   id,
@@ -11,6 +23,9 @@ function BookmarkCard({
   createdAt,
   onToggleFavourite,
   onToggleArchive,
+  onShowQR,
+  onEdit,
+  onDelete,
 }) {
   return (
     <div
@@ -27,21 +42,81 @@ function BookmarkCard({
     >
       {/* Title + URL */}
       <div>
-        <a
-          href={url}
-          target="_blank"
-          rel="noreferrer"
-          className="
+        <div className="flex items-center justify-between gap-2">
+          <a
+            href={url}
+            target="_blank"
+            rel="noreferrer"
+            className="
             text-lg font-semibold
             text-[var(--color-sky-aqua-600)]
             dark:text-[var(--color-sky-aqua-300)]
             hover:text-[var(--color-sky-aqua-300)]
             break-words
           "
-        >
-          {title || url}
-        </a>
-        <p className="text-xs text-[var(--color-sky-aqua-600) dark:text-[var(--color-sky-aqua-300)] mt-1 break-all">
+          >
+            {title || url}
+          </a>
+
+          <div className="flex items-center gap-2">
+            {/* QR Button */}
+            {onShowQR && (
+              <button
+                onClick={() => onShowQR(id)}
+                className="
+          p-2 rounded-lg
+          bg-[var(--color-sky-aqua-800)]
+          border border-[var(--color-sky-aqua-600)]
+          text-[var(--color-sky-aqua-100)]
+          hover:bg-[var(--color-sky-aqua-400)]
+          hover:text-[var(--color-sky-aqua-950)]
+          transition
+        "
+                title="Show QR Code"
+              >
+                <QrCode size={16} />
+              </button>
+            )}
+
+            {/* Edit Button */}
+            {onEdit && (
+              <button
+                onClick={() => onEdit(id)}
+                className="
+          p-2 rounded-lg
+          bg-[var(--color-sky-aqua-800)]
+          border border-[var(--color-sky-aqua-600)]
+          text-[var(--color-sky-aqua-100)]
+          hover:bg-yellow-400 hover:text-black
+          transition
+        "
+                title="Edit Bookmark"
+              >
+                <Edit2 size={16} />
+              </button>
+            )}
+
+            {/* Delete Button */}
+            {onDelete && (
+              <button
+                onClick={() => onDelete(id)}
+                className="
+          p-2 rounded-lg
+          bg-[var(--color-sky-aqua-800)]
+          border border-[var(--color-sky-aqua-600)]
+          text-[var(--color-sky-aqua-100)]
+          hover:bg-red-500 hover:text-white
+          transition
+        "
+                title="Delete Bookmark"
+              >
+                <Trash2 size={16} />
+              </button>
+            )}
+          </div>
+        </div>
+
+        <p className="text-xs text-[var(--color-sky-aqua-600)] dark:text-[var(--color-sky-aqua-300)] mt-1 break-all">
           {url}
         </p>
       </div>

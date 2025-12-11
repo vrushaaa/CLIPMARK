@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Moon, Sun, Paperclip, User, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import authService from "../services/authService";
 
 export default function Navbar({ toggleSidebar, isSidebarOpen }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
-  // ✅ Temporary login state (replace later with real auth)
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(localStorage.getItem("token"))
+  );
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -29,10 +31,15 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
     setTheme(theme === "light" ? "dark" : "light");
   };
 
-  // ✅ Temporary logout function
-  const handleLogout = () => {
-    alert("Logged Out (Backend not added yet)");
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      navigate("/auth/login")
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -41,33 +48,16 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
       bg-white/90 backdrop-blur-sm dark:bg-slate-900/90 dark:border-b dark:border-slate-700
       flex items-center justify-between sticky top-0 z-50"
     >
-      {/* Logo */}
-      {/* <Link to="/" className="flex items-center gap-2"> */}
-
-      <div className="flex items-center gap-2">
-        {isLoggedIn && (
-          <>
-            {/* <button
-              onClick={toggleSidebar}
-              className="flex items-center hover:opacity-80 transition"
-            >
-              CLICK ME
-            </button> */}
-
-            {/* <button
-                onClick={() => isSidebarOpen  ? toggleSidebar() : goToDashboard()}
-                // onClick={() =>  toggleSidebar() }
-                className="flex items-center hover:opacity-80 transition"
-              >
-                
-                CLICK ME
-              </button> */}
-            <button onClick={toggleSidebar} className="bg-[var(--color-sky-aqua-500)] p-2 rounded">
-              Toggle Sidebar
-              </button>
-          </>
-        )}
-
+      <div
+        className="flex items-center gap-2 cursor-pointer"
+        onClick={() => {
+          if (isLoggedIn) {
+            toggleSidebar(); // open/close sidebar
+          } else {
+            navigate("/"); // go home
+          }
+        }}
+      >
         <div
           className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#48CAE4] to-cyan-300 flex items-center justify-center
           text-slate-900 shadow-md shadow-[#48CAE4]/20"
@@ -89,42 +79,25 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
       <div className="flex items-center gap-6">
         {/* Navigation Links */}
         <div className="hidden sm:flex items-center gap-6 font-medium">
-          {/* ❌ Show when NOT LOGGED IN */}
           {!isLoggedIn && (
             <>
               <Link
-                to="/login"
+                to="/auth/login"
                 className="text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
               >
                 Login
               </Link>
 
               <Link
-                to="/signup"
+                to="/auth/signup"
                 className="px-4 py-1.5 rounded-full bg-[#48CAE4] text-slate-900 font-bold hover:bg-cyan-400 transition shadow-md"
               >
                 Signup
               </Link>
             </>
           )}
-
-          {/* ✅ Show only AFTER LOGIN */}
           {isLoggedIn && (
             <>
-              <Link
-                to="/api/favourites"
-                className="text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
-              >
-                Favourites
-              </Link>
-
-              <Link
-                to="/api/archived"
-                className="text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
-              >
-                Archived
-              </Link>
-
               <Link
                 to="/profile"
                 className="flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
@@ -155,7 +128,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
         </button>
 
         {/* TEMP BUTTON: Click to simulate login while backend not added */}
-        {!isLoggedIn && (
+        {/* {!isLoggedIn && (
           <button
             onClick={() => {
               alert("Logged In (Simulated)");
@@ -165,7 +138,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
           >
             Simulate Login
           </button>
-        )}
+        )} */}
       </div>
     </nav>
   );

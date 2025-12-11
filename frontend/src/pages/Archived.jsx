@@ -1,163 +1,102 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BookmarkCard from "../components/BookmarkCard";
-// import {
-//   fetchArchivedBookmarks,
-//   updateBookmark,
-// } from "../services/bookmarkService";
+import Sidebar from "../components/Sidebar";
+import NavBar from "../components/NavBar";
+import { Menu } from "lucide-react";
 
-function Archived() {
-  const [bookmarks, setBookmarks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+export default function Archived() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-//   useEffect(() => {
-//     async function load() {
-//       try {
-//         setLoading(true);
-//         setError("");
-//         const data = await fetchArchivedBookmarks();
-//         setBookmarks(data);
-//       } catch (err) {
-//         console.error(err);
-//         setError(err.message || "Something went wrong");
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-
-//     load();
-//   }, []);
-
-//   const handleToggleArchive = async (id, newValue) => {
-//     try {
-//       await updateBookmark(id, { is_archived: newValue });
-//       // If unarchived, remove from archived list
-//       if (!newValue) {
-//         setBookmarks((prev) => prev.filter((b) => b.id !== id));
-//       }
-//     } catch (err) {
-//       console.error(err);
-//       alert("Failed to update archive status");
-//     }
-//   };
-
-//   const handleToggleFavourite = async (id, newValue) => {
-//     try {
-//       await updateBookmark(id, { is_favourite: newValue });
-//       // We keep it in the list, since it's still archived;
-//       // only archive flag controls visibility here.
-//       setBookmarks((prev) =>
-//         prev.map((b) =>
-//           b.id === id ? { ...b, is_favourite: newValue } : b
-//         )
-//       );
-//     } catch (err) {
-//       console.error(err);
-//       alert("Failed to update favourite status");
-//     }
-//   };
+  // Temporary mock archived bookmarks
+  const bookmarks = [
+    {
+      id: 1,
+      title: "Old Project Docs",
+      url: "https://example.com/docs",
+      notes: "Archived old documentation",
+      tags: ["docs", "archive"],
+      is_favourite: false,
+      is_archived: true,
+      created_at: "2023-09-15T10:00:00",
+    },
+    {
+      id: 2,
+      title: "MDN Web Docs",
+      url: "https://developer.mozilla.org",
+      notes: "Reference for HTML, CSS, JS",
+      tags: ["javascript", "css", "web"],
+      is_favourite: true,
+      is_archived: true,
+      created_at: "2024-02-20T13:45:00",
+    },
+    {
+      id: 3,
+      title: "Tailwind Cheatsheet",
+      url: "https://tailwindcomponents.com/cheatsheet/",
+      notes: "Handy for styling",
+      tags: ["tailwind", "css"],
+      is_favourite: false,
+      is_archived: true,
+      created_at: "2024-05-10T09:15:00",
+    },
+  ];
 
   return (
-    <div
-      className="
-        min-h-screen
-        dark:bg-slate-900
-        bg-[var(--color-sky-aqua-50)]
-        text-[var(--color-sky-aqua-900)]
-      "
-    >
-      <div className="max-w-5xl mx-auto px-4 py-6 md:py-10">
-        {/* Header */}
-        <header className="mb-6 md:mb-8 flex items-center justify-between gap-3">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-sky-aqua-900)] dark:text-[var(--color-sky-aqua-50)]">
+    <>
+    <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+    <div className="flex min-h-screen bg-[var(--color-sky-aqua-50)] dark:bg-slate-900 transition-colors">
+
+      {/* ---------- Mobile Sidebar Toggle Button ---------- */}
+      <button
+        onClick={toggleSidebar}
+        className="fixed top-3 left-3 lg:hidden z-50 p-2 rounded-full bg-[#4CCCE6] text-slate-900 shadow-md hover:opacity-90"
+        aria-label="Toggle Sidebar"
+      >
+        <Menu size={24} />
+      </button>
+
+      {/* ---------- Sidebar ---------- */}
+      <div
+        className={`fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out ${
+            isSidebarOpen
+              ? "w-64 translate-x-0"
+              : "w-64 -translate-x-full lg:w-0"
+          } overflow-y-auto shrink-0`}
+      >
+        <Sidebar />
+      </div>
+
+      {/* ---------- Mobile Overlay ---------- */}
+      {isSidebarOpen && (
+        <div
+          onClick={toggleSidebar}
+          className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* ---------- MAIN CONTENT AREA ---------- */}
+      <div className="flex-1 flex flex-col">
+
+        
+
+        <main className="flex-1 p-4 md:p-8">
+
+          {/* Page Header */}
+          <header className="mb-6 md:mb-8">
+            <h1 className="text-3xl font-extrabold text-[var(--color-sky-aqua-900)] dark:text-white">
               Archived Bookmarks
             </h1>
-            <p className="text-sm text-[var(--color-sky-aqua-700)] dark:text-[var(--color-sky-aqua-50)] mt-1">
+            <p className="text-sm text-[var(--color-sky-aqua-700)] dark:text-slate-300 mt-1">
               Old bookmarks kept safely out of your main list.
             </p>
-          </div>
-        </header>
+          </header>
 
-        {/* Loading / Error / Empty */}
-        {loading && (
-          <p className="text-sm text-[var(--color-sky-aqua-700)] dark:text-[var(--color-sky-aqua-50)]">
-            Loading archived bookmarks...
-          </p>
-        )}
-
-        {error && !loading && (
-          <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md">
-            {error}
-          </p>
-        )}
-
-        {!loading && !error && bookmarks.length === 0 && (
-          <div
-            className="
-              mt-6 p-4 rounded-xl
-              bg-[var(--color-sky-aqua-100)]
-              text-[var(--color-sky-aqua-800)]
-              text-sm
-            "
-          >
-            No archived bookmarks yet. Archive a bookmark from your main list to
-            keep it here.
-          </div>
-        )}
-
-        {/* Grid */}
-        {/* <div className="mt-6 grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
-          {bookmarks.map((bookmark) => (
-            <BookmarkCard
-              key={bookmark.id}
-              id={bookmark.id}
-              title={bookmark.title}
-              url={bookmark.url}
-              notes={bookmark.notes}
-              tags={bookmark.tags || []}
-              isFavourite={bookmark.is_favourite}
-              isArchived={bookmark.is_archived}
-              createdAt={bookmark.created_at}
-              onToggleFavourite={handleToggleFavourite}
-              onToggleArchive={handleToggleArchive}
-            />
-          ))}
-        </div> */}
-        <div className="mt-6 grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
-            {[
-                {
-                id: 1,
-                title: "React Docs",
-                url: "https://react.dev",
-                notes: "Official React documentation for reference.",
-                tags: ["react", "frontend", "learning"],
-                is_favourite: true,
-                is_archived: false,
-                created_at: "2025-11-25T10:30:00",
-                },
-                {
-                id: 2,
-                title: "MDN Web Docs",
-                url: "https://developer.mozilla.org",
-                notes: "Best resource for JS, CSS, and Web APIs.",
-                tags: ["javascript", "css", "web"],
-                is_favourite: false,
-                is_archived: true,
-                created_at: "2025-10-18T16:15:00",
-                },
-                {
-                id: 3,
-                title: "Tailwind Cheatsheet",
-                url: "https://tailwindcomponents.com/cheatsheet/",
-                notes: "Useful classes at one place.",
-                tags: ["tailwind", "css"],
-                is_favourite: true,
-                is_archived: true,
-                created_at: "2025-09-12T09:00:00",
-                }
-            ].map((bookmark) => (
-                <BookmarkCard
+          {/* Bookmarks Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {bookmarks.map((bookmark) => (
+              <BookmarkCard
                 key={bookmark.id}
                 id={bookmark.id}
                 title={bookmark.title}
@@ -167,15 +106,16 @@ function Archived() {
                 isFavourite={bookmark.is_favourite}
                 isArchived={bookmark.is_archived}
                 createdAt={bookmark.created_at}
-                onToggleFavourite={() => alert("Backend not integrated yet!")}
-                onToggleArchive={() => alert("Backend not integrated yet!")}
-                />
+                onToggleFavourite={() => alert("Backend not integrated yet")}
+                onToggleArchive={() => alert("Backend not integrated yet")}
+              />
             ))}
-        </div>
+          </div>
 
+        </main>
       </div>
     </div>
+    </>
+    
   );
 }
-
-export default Archived;

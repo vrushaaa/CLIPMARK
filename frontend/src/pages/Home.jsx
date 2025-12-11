@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Bookmark, Star, Archive, Tag, User, Send } from "lucide-react";
+import Navbar from "../components/NavBar";
 
 // Primary color: #48CAE4 (Cyan/Aqua)
 
@@ -14,7 +15,8 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--color-sky-aqua-100)] dark:bg-slate-900 transition-colors duration-500 flex flex-col">
-
+      <Navbar/>
+      
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
         <div className="max-w-4xl w-full">

@@ -1,197 +1,142 @@
 # app/routes/auth.py
-from flask import Blueprint, request, jsonify, render_template, redirect, url_for, flash, current_app
+
+from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_dance.contrib.google import google
-from flask_dance.contrib.github import github
-from itsdangerous import URLSafeTimedSerializer
 from app import db, bcrypt
 from app.models.user import User
-from flask_mail import Message
 
 auth = Blueprint('auth', __name__)
 
-# REGISTER 
-@auth.route('/signup', methods=['GET', 'POST'])
+
+# ----------------------------
+# SIGNUP (JSON ONLY)
+# ----------------------------
+@auth.route('/signup', methods=['POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('bookmarks_api.dashboard'))
+        return jsonify({"message": "Already logged in"}), 200
 
-    if request.method == 'POST' and request.form:
-        name = request.form.get('name')
-        email = request.form.get('email')
-        username = request.form.get('username')
-        password = request.form.get('password')
+    data = request.get_json()
 
-        # Validate all fields
-        if not all([name, email, username, password]):
-            flash('Please fill all fields', 'error')
-            return redirect(url_for('auth.signup'))
+    name = data.get('name')
+    email = data.get('email')
+    username = data.get('username')
+    password = data.get('password')
 
-        if User.query.filter_by(username=username).first():
-            flash('Username already exists', 'error')
-            return redirect(url_for('auth.signup'))
+    # Field validation
+    if not all([name, email, username, password]):
+        return jsonify({"error": "All fields are required"}), 400
 
-        if User.query.filter_by(email=email).first():
-            flash('Email already registered', 'error')
-            return redirect(url_for('auth.signup'))
+    # Duplicate check
+    if User.query.filter_by(username=username.lower()).first():
+        return jsonify({"error": "Username already exists"}), 409
 
-        # Create user
-        user = User(
-            name=name.strip(),
-            email=email.strip().lower(),
-            username=username.strip().lower()
-        )
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
+    if User.query.filter_by(email=email.lower()).first():
+        return jsonify({"error": "Email already registered"}), 409
 
-        flash('Registered successfully! Please login.', 'success')
-        return redirect(url_for('auth.login'))
+    # Create user
+    user = User(
+        name=name.strip(),
+        email=email.strip().lower(),
+        username=username.strip().lower()
+    )
+    user.set_password(password)
 
-    elif request.is_json:
-        data = request.get_json()
-        name = data.get('name')  
-        email = data.get('email')
-        username = data.get('username')
-        password = data.get('password')
+    db.session.add(user)
+    db.session.commit()
 
-        if not all([name, email, username, password]):
-            return jsonify({
-                'error': 'All fields are required: name, email, username, password'
-            }), 400
+    return jsonify({
+        "message": "Signup successful",
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "username": user.username
+        }
+    }), 201
 
-        if User.query.filter_by(username=username).first():
-            return jsonify({'error': 'Username already exists'}), 400
 
-        if User.query.filter_by(email=email).first():
-            return jsonify({'error': 'Email already registered'}), 400
-
-        user = User(
-            name=name.strip(),
-            email=email.strip().lower(),
-            username=username.strip().lower()
-        )
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-
-        return jsonify({
-            'message': 'Registered successfully!',
-            'user': {
-                'id': user.id,
-                'name': user.name,       
-                'email': user.email,
-                'username': user.username
-            }
-        }), 201
-
-    return render_template('signup.html')
-
-# LOGIN 
-@auth.route('/login', methods=['GET', 'POST'])
+# ----------------------------
+# LOGIN (JSON ONLY)
+# ----------------------------
+@auth.route('/login', methods=['POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('bookmarks_api.dashboard'))
-    
-    if request.method == 'POST' and request.form:
-        identifier = request.form.get('username')  
-        password = request.form.get('password')
+        return jsonify({"message": "Already logged in"}), 200
 
-        if not identifier or not password:
-            flash('Please fill all fields', 'error')
-            return redirect(url_for('auth.login'))
+    data = request.get_json()
 
-        user = (
-            User.query.filter_by(username=identifier.lower()).first() or
-            User.query.filter_by(email=identifier.lower()).first()
-        )
+    identifier = data.get('username')  # can be username or email
+    password = data.get('password')
 
-        if user and user.check_password(password):
-            login_user(user)
-            flash(f'Welcome back, {user.username}!', 'success')
-            return redirect(url_for('bookmarks_api.dashboard'))
+    if not identifier or not password:
+        return jsonify({"error": "username/email and password required"}), 400
 
-        flash('Invalid username/email or password', 'error')
-        return redirect(url_for('auth.login'))
+    # Find user (username OR email)
+    user = (
+        User.query.filter_by(username=identifier.lower()).first() or
+        User.query.filter_by(email=identifier.lower()).first()
+    )
 
-    elif request.is_json:
-        data = request.get_json()
-        identifier = data.get('username')
-        password = data.get('password')
+    if user and user.check_password(password):
+        login_user(user)
+        return jsonify({
+            "message": "Login successful",
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email
+            }
+        }), 200
 
-        if not identifier or not password:
-            return jsonify({'error': 'username/email and password required'}), 400
+    return jsonify({"error": "Invalid credentials"}), 401
 
-        # Login via username or email
-        user = (
-            User.query.filter_by(username=identifier.lower()).first() or
-            User.query.filter_by(email=identifier.lower()).first()
-        )
 
-        if user and user.check_password(password):
-            login_user(user)
-            return jsonify({
-                'message': 'Login successful',
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email
-                }
-            }), 200
-
-        return jsonify({'error': 'Invalid credentials'}), 401
-
-    return render_template('login.html')
-
-# LOGOUT 
-@auth.route('/logout')
+# ----------------------------
+# LOGOUT (JSON ONLY)
+# ----------------------------
+@auth.route('/logout', methods=['POST'])
 @login_required
 def logout():
     logout_user()
-    flash('Logged out successfully', 'success')
-    
-    if request.is_json:
-        return jsonify({'message': 'Logged out'}), 200
-    
-    return redirect(url_for('auth.login'))
+    return jsonify({"message": "Logged out"}), 200
 
 
+# ----------------------------
+# AUTH CHECK (OPTIONAL)
+# ----------------------------
+@auth.route('/me', methods=['GET'])
+def check_auth():
+    """React can call this to check if user is logged in."""
+    if current_user.is_authenticated:
+        return jsonify({
+            "logged_in": True,
+            "user": {
+                "id": current_user.id,
+                "username": current_user.username,
+                "email": current_user.email
+            }
+        }), 200
+
+    return jsonify({"logged_in": False}), 200
+
+
+# ----------------------------
+# ERROR HANDLERS (JSON ONLY)
+# ----------------------------
 @auth.errorhandler(400)
 def bad_request(e):
-    mainMessage = "Bad Request"
-    subMessage = str(e.description) if hasattr(e, 'description') else "Invalid input"
-
-    if request.accept_mimetypes.accept_html:
-        return render_template('noBookmark.html', SCode=400, message=mainMessage, subMessage=subMessage), 400
-
-    return jsonify({'error': mainMessage, 'details': subMessage}), 400
+    return jsonify({"error": "Bad request", "details": str(e)}), 400
 
 @auth.errorhandler(404)
 def not_found(e):
-    mainMessage = "Not Found"
-    subMessage = "Resource not found"
-
-    if request.accept_mimetypes.accept_html:
-        return render_template('noBookmark.html', SCode=404, message=mainMessage, subMessage=subMessage), 404
-
-    return jsonify({'error': mainMessage, 'details': subMessage}), 404
+    return jsonify({"error": "Not found"}), 404
 
 @auth.errorhandler(409)
 def conflict(e):
-    mainMessage = "Conflict"
-    subMessage = str(e.description) if hasattr(e, 'description') else "Resource already exists"
-
-    if request.accept_mimetypes.accept_html:
-        return render_template('noBookmark.html', SCode=409, message=mainMessage, subMessage=subMessage), 409
-
-    return jsonify({'error': mainMessage, 'details': subMessage}), 409
+    return jsonify({"error": "Conflict", "details": str(e)}), 409
 
 @auth.errorhandler(500)
 def internal_error(e):
-    mainMessage = "Internal Server Error"
-    subMessage = "Something went wrong"
-
-    if request.accept_mimetypes.accept_html:
-        return render_template('noBookmark.html', SCode=500, message=mainMessage, subMessage=subMessage), 500
-
-    return jsonify({'error': mainMessage, 'details': subMessage}), 500
+    db.session.rollback()
+    return jsonify({"error": "Server error"}), 500
