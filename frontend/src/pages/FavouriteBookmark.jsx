@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useBookmarks } from "../contexts/BookmarkContext"; 
+import { useBookmarks } from "../contexts/BookmarkContext";
 import Sidebar from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import BookmarkCard from "../components/BookmarkCard";
 import { Menu } from "lucide-react";
-
 import QRModal from "../components/modals/QRModal";
 import DeleteModal from "../components/modals/DeleteModal";
 import EditBookmarkModal from "../components/modals/EditBookmarkModal";
 import AddBookmarkModal from "../components/modals/AddBookmarkModal";
+import Pagination from "../components/Pagination";
 
 export default function Favourites() {
   const {
@@ -17,7 +17,7 @@ export default function Favourites() {
     error,
     fetchFavouriteBookmarks,
     toggleFavourite,
-    toggleArchive,       
+    toggleArchive,
     deleteBookmark,
     updateBookmark,
     getQRCode,
@@ -116,6 +116,26 @@ export default function Favourites() {
     setAddModalOpen(false);
   };
 
+  // pagination
+  // pagination
+  const ITEMS_PER_PAGE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const favouriteOnly = favouriteBookmarks.filter(
+    (b) => b.is_favourite === true
+  );
+
+  const totalPages = Math.ceil(favouriteOnly.length / ITEMS_PER_PAGE);
+
+  const paginatedBookmarks = favouriteOnly.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [favouriteOnly.length]);
+
   return (
     <>
       <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
@@ -131,11 +151,15 @@ export default function Favourites() {
 
         {/* Sidebar */}
         <div
-          className={`fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out ${
-            isSidebarOpen
-              ? "w-64 translate-x-0"
-              : "w-64 -translate-x-full lg:w-0"
-          } overflow-y-auto shrink-0`}
+          className={`fixed inset-y-0 left-0 z-40
+    lg:relative lg:inset-y-0 lg:translate-x-0
+    transition-transform duration-300 ease-in-out
+    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+    w-64
+    min-h-screen
+    overflow-y-auto
+    shrink-0
+  `}
         >
           <Sidebar />
           {isSidebarOpen && (
@@ -163,25 +187,38 @@ export default function Favourites() {
               <p>Loading favourites...</p>
             ) : error ? (
               <p className="text-red-500">{error}</p>
-            ) : favouriteBookmarks.length === 0 ? (
+            ) : favouriteOnly.length === 0 ? (
               <p className="text-slate-600 dark:text-slate-400">
                 No favourite bookmarks yet. Star some from your main list!
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
-                {favouriteBookmarks.map((bm) => (
+                {paginatedBookmarks.map((bm) => (
                   <BookmarkCard
                     key={bm.id}
-                    {...bm}
+                    id={bm.id}
+                    title={bm.title}
+                    url={bm.url}
+                    notes={bm.notes}
+                    tags={bm.tags || []}
+                    isFavourite={bm.is_favourite}
+                    isArchived={bm.archived}
+                    createdAt={bm.created_at}
                     onShowQR={() => showQR(bm.id)}
                     onEdit={() => handleEdit(bm.id)}
                     onDelete={() => handleDelete(bm.id)}
-                    onToggleArchive={() => toggleArchive(bm.id)} 
-                    onToggleFavourite={() => toggleFavourite(bm.id)} 
+                    onToggleArchive={() => toggleArchive(bm.id)}
+                    onToggleFavourite={() => toggleFavourite(bm.id)}
                   />
                 ))}
               </div>
             )}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </main>
         </div>
       </div>

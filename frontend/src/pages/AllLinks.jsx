@@ -13,7 +13,7 @@ import Pagination from "../components/Pagination";
 
 export default function Dashboard() {
   // Layout State
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   // Data

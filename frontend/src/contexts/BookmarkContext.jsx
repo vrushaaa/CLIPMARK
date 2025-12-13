@@ -5,7 +5,7 @@ const BookmarkContext = createContext(null);
 
 export const BookmarkProvider = ({ children }) => {
   const [bookmarks, setBookmarks] = useState([]);
-  const [favouriteBookmarks, setFavouriteBookmarks] = useState([]); 
+  const [favouriteBookmarks, setFavouriteBookmarks] = useState([]);
   const [archivedBookmarks, setArchivedBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -60,21 +60,17 @@ export const BookmarkProvider = ({ children }) => {
   // Fetch all bookmarks with favourite= true
   const fetchFavouriteBookmarks = useCallback(async () => {
     try {
+      setLoading(true);
       const data = await bookmarkService.getAllBookmarks({
-        favourite: true,  
+        favourite: "true", // ✅ STRING
       });
-     setFavouriteBookmarks(
-  (data.bookmarks || []).map((b) => ({
-    ...b,
-    isFavourite: true,              
-    isArchived: b.is_archived,      
-  }))
-);
+      setFavouriteBookmarks(data.bookmarks || []);
       return data;
-    } catch (err) {
-      throw err;
+    } finally {
+      setLoading(false);
     }
   }, []);
+
   // Get single bookmark
   const getBookmark = useCallback(async (id) => {
     try {
@@ -181,38 +177,36 @@ export const BookmarkProvider = ({ children }) => {
     }
   }, []);
 
-  const toggleFavourite = useCallback(async (id) => {
-  try {
-    const updated = await bookmarkService.toggleFavourite(id);
+  const toggleFavourite = useCallback(
+    async (id) => {
+      try {
+        const updated = await bookmarkService.toggleFavourite(id);
 
-    // Update main bookmarks list
-    setBookmarks((prev) =>
-      prev.map((b) =>
-        b.id === id
-          ? { ...b, isFavourite: updated.is_favourite }
-          : b
-      )
-    );
+        // Update main bookmarks list
+        setBookmarks((prev) =>
+          prev.map((b) =>
+            b.id === id ? { ...b, isFavourite: updated.is_favourite } : b
+          )
+        );
 
-    // Update favourite list
-    setFavouriteBookmarks((prev) => {
-      if (updated.is_favourite) {
-        const full = bookmarks.find((b) => b.id === id);
-        return full
-          ? [...prev, { ...full, isFavourite: true }]
-          : prev;
-      } else {
-        // ⭐ REMOVE FROM FAVOURITES PAGE
-        return prev.filter((b) => b.id !== id);
+        // Update favourite list
+        setFavouriteBookmarks((prev) => {
+          if (updated.is_favourite) {
+            const full = bookmarks.find((b) => b.id === id);
+            return full ? [...prev, { ...full, isFavourite: true }] : prev;
+          } else {
+            // ⭐ REMOVE FROM FAVOURITES PAGE
+            return prev.filter((b) => b.id !== id);
+          }
+        });
+
+        return updated;
+      } catch (err) {
+        throw err;
       }
-    });
-
-    return updated;
-  } catch (err) {
-    throw err;
-  }
-}, [bookmarks]);
-
+    },
+    [bookmarks]
+  );
 
   // Export bookmarks
   const exportBookmarks = useCallback(async () => {
@@ -231,8 +225,8 @@ export const BookmarkProvider = ({ children }) => {
     archivedBookmarks,
     loading,
     error,
-    favouriteBookmarks,           
-    fetchFavouriteBookmarks,      
+    favouriteBookmarks,
+    fetchFavouriteBookmarks,
     toggleFavourite,
     fetchBookmarks,
     fetchArchivedBookmarks,
