@@ -23,32 +23,33 @@ DUMMY_USERS = [
 ]
 
 DUMMY_BOOKMARKS = [
-    {"url": "https://github.com",               "title": "GitHub",               "notes": "Code hosting",          "tags": ["code", "git"],          "archived": False},
-    {"url": "https://python.org",               "title": "Python Official",      "notes": "Python site",           "tags": ["python", "dev"],        "archived": False},
-    {"url": "https://flask.palletsprojects.com","title": "Flask Docs",           "notes": "Flask framework",       "tags": ["flask", "web"],         "archived": False},
-    {"url": "https://getbootstrap.com",         "title": "Bootstrap",            "notes": "CSS framework",         "tags": ["css", "web"],           "archived": True},
-    {"url": "https://stackoverflow.com",        "title": "Stack Overflow",       "notes": "Q&A site",              "tags": ["help", "coding"],       "archived": False},
-    {"url": "https://reactjs.org",              "title": "React",                "notes": "JS frontend",           "tags": ["react", "javascript"],  "archived": False},
-    {"url": "https://nodejs.org",               "title": "Node.js",              "notes": "JS backend",            "tags": ["nodejs", "javascript"], "archived": False},
-    {"url": "https://vuejs.org",                "title": "Vue.js",               "notes": "Frontend framework",    "tags": ["vue", "javascript"],    "archived": False},
-    {"url": "https://angular.io",               "title": "Angular",              "notes": "Frontend framework",    "tags": ["angular", "typescript"],"archived": False},
-    {"url": "https://linux.org",                "title": "Linux Info",           "notes": "OS info",               "tags": ["linux", "oss"],         "archived": True},
-    {"url": "https://docker.com",               "title": "Docker",               "notes": "Container platform",    "tags": ["docker", "devops"],     "archived": False},
-    {"url": "https://kubernetes.io",            "title": "Kubernetes",           "notes": "Orchestration",         "tags": ["k8s", "devops"],        "archived": False},
-    {"url": "https://aws.amazon.com",           "title": "AWS Cloud",            "notes": "Cloud provider",        "tags": ["cloud", "aws"],         "archived": False},
-    {"url": "https://azure.microsoft.com",      "title": "Azure Cloud",          "notes": "Microsoft cloud",       "tags": ["cloud", "azure"],       "archived": False},
-    {"url": "https://cloud.google.com",         "title": "Google Cloud",         "notes": "GCP",                   "tags": ["cloud", "gcp"],         "archived": False},
-    {"url": "https://mongodb.com",              "title": "MongoDB",              "notes": "NoSQL DB",              "tags": ["database", "nosql"],    "archived": False},
-    {"url": "https://postgresql.org",           "title": "PostgreSQL",           "notes": "Relational DB",         "tags": ["database", "sql"],      "archived": False},
-    {"url": "https://redis.io",                 "title": "Redis",                "notes": "In‑memory DB",          "tags": ["database", "cache"],    "archived": False},
-    {"url": "https://rabbitmq.com",             "title": "RabbitMQ",             "notes": "Message broker",        "tags": ["mq", "devops"],         "archived": False},
-    {"url": "https://jenkins.io",               "title": "Jenkins",              "notes": "CI/CD tool",            "tags": ["ci", "cd"],             "archived": False},
+    {"url": "https://github.com",               "title": "GitHub",               "notes": "Code hosting",          "tags": ["code", "git"],          "archived": False, "is_favourite":  False},
+    {"url": "https://python.org",               "title": "Python Official",      "notes": "Python site",           "tags": ["python", "dev"],        "archived": False, "is_favourite": True},
+    {"url": "https://flask.palletsprojects.com","title": "Flask Docs",           "notes": "Flask framework",       "tags": ["flask", "web"],         "archived": False, "is_favourite": True},
+    {"url": "https://getbootstrap.com",         "title": "Bootstrap",            "notes": "CSS framework",         "tags": ["css", "web"],           "archived": True, "is_favourite": False},
+    {"url": "https://stackoverflow.com",        "title": "Stack Overflow",       "notes": "Q&A site",              "tags": ["help", "coding"],       "archived": False, "is_favourite": True},
+    {"url": "https://reactjs.org",              "title": "React",                "notes": "JS frontend",           "tags": ["react", "javascript"],  "archived": False, "is_favourite": True},
+    {"url": "https://nodejs.org",               "title": "Node.js",              "notes": "JS backend",            "tags": ["nodejs", "javascript"], "archived": False, "is_favourite": True},
+    {"url": "https://vuejs.org",                "title": "Vue.js",               "notes": "Frontend framework",    "tags": ["vue", "javascript"],    "archived": False, "is_favourite": True},
+    {"url": "https://angular.io",               "title": "Angular",              "notes": "Frontend framework",    "tags": ["angular", "typescript"],"archived": False, "is_favourite": True},
+    {"url": "https://linux.org",                "title": "Linux Info",           "notes": "OS info",               "tags": ["linux", "oss"],         "archived": True, "is_favourite": True},
+    {"url": "https://docker.com",               "title": "Docker",               "notes": "Container platform",    "tags": ["docker", "devops"],     "archived": False, "is_favourite": False},
+    {"url": "https://kubernetes.io",            "title": "Kubernetes",           "notes": "Orchestration",         "tags": ["k8s", "devops"],        "archived": False, "is_favourite": True},
+    {"url": "https://aws.amazon.com",           "title": "AWS Cloud",            "notes": "Cloud provider",        "tags": ["cloud", "aws"],         "archived": False, "is_favourite": False},
+    {"url": "https://azure.microsoft.com",      "title": "Azure Cloud",          "notes": "Microsoft cloud",       "tags": ["cloud", "azure"],       "archived": False, "is_favourite": False},
+    {"url": "https://cloud.google.com",         "title": "Google Cloud",         "notes": "GCP",                   "tags": ["cloud", "gcp"],         "archived": False, "is_favourite": True},
+    {"url": "https://mongodb.com",              "title": "MongoDB",              "notes": "NoSQL DB",              "tags": ["database", "nosql"],    "archived": False, "is_favourite": True},
+    {"url": "https://postgresql.org",           "title": "PostgreSQL",           "notes": "Relational DB",         "tags": ["database", "sql"],      "archived": False, "is_favourite": True},
+    {"url": "https://redis.io",                 "title": "Redis",                "notes": "In‑memory DB",          "tags": ["database", "cache"],    "archived": False, "is_favourite": True},
+    {"url": "https://rabbitmq.com",             "title": "RabbitMQ",             "notes": "Message broker",        "tags": ["mq", "devops"],         "archived": False, "is_favourite": True},
+    {"url": "https://jenkins.io",               "title": "Jenkins",              "notes": "CI/CD tool",            "tags": ["ci", "cd"],             "archived": False, "is_favourite": True},
 ] + [
     {"url": f"https://example.com/tutorial{i}",
      "title": f"Tutorial {i}",
      "notes": f"Learning topic {i}",
      "tags": ["tutorial", "learning"],
-     "archived": False}
+     "archived": False,
+    "is_favourite": random.choice([True, False])}
     for i in range(1, 21)
 ]
 
@@ -106,13 +107,15 @@ def init_db_with_data():
                 title = src["title"] if src else "Untitled"
                 notes = src["notes"] + f" (saved by {user.username})" if src else ""
                 archived = src["archived"] if src else False
+                is_favourite = src["is_favourite"] if src and "is_favourite" in src else False  # ← NEW
 
                 ub = UserBookmark(
                     user_id=user.id,
                     bookmark_id=bm.id,
                     title=title,
                     notes=notes,
-                    archived=archived
+                    archived=archived,
+                    is_favourite=is_favourite  
                 )
                 db.session.add(ub)
 

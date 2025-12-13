@@ -158,3 +158,73 @@ ClipMark/                   # Root project folder
 
 
 
+### New Structure:
+CLIPMARK/
+├── backend/
+│   ├── run.py
+│   ├── init_db.py
+│   ├── config.py
+│   ├── .env                  (example environment file, not shared)
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   │   ├── __init__.py   (implied)
+│   │   │   ├── bookmark.py
+│   │   │   ├── user.py
+│   │   │   ├── tag.py
+│   │   │   ├── user_bookmark.py
+│   │   │   └── tag_user_bookmark.py
+│   │   ├── routes/
+│   │   │   ├── bookmark_routes.py
+│   │   │   ├── user_routes.py
+│   │   ├── utils/
+│   │   │   ├── bookmark_utils.py
+│   │   │   ├── routes_utils.py
+│   │   │   └── tag_counter.py
+│   │   └── auth/
+│   │       └── auth.py       
+│   └── requirements.txt      
+│
+└── frontend/
+    ├── src/
+    │   ├── main.jsx
+    │   ├── App.jsx
+    │   ├── index.css
+    │   ├── contexts/
+    │   │   ├── AppProvider.jsx
+    │   │   ├── AuthContext.jsx
+    │   │   ├── BookmarkContext.jsx
+    │   │   └── TagContext.jsx
+    │   ├── services/
+    │   │   ├── api.js
+    │   │   ├── authService.js
+    │   │   ├── bookmarkService.js
+    │   │   └── tagService.js
+    │   ├── components/
+    │   │   ├── AuthComponents.jsx
+    │   │   ├── Button.jsx
+    │   │   ├── NavBar.jsx
+    │   │   ├── Sidebar.jsx
+    │   │   └── modals/
+    │   │       ├── AddBookmarkModal.jsx
+    │   │       ├── EditBookmarkModal.jsx
+    │   │       ├── DeleteModal.jsx
+    │   │       └── QRModal.jsx
+    │   ├── pages/
+    │   │   ├── Home.jsx
+    │   │   ├── Login.jsx
+    │   │   ├── Signup.jsx
+    │   │   ├── ForgotPassword.jsx
+    │   │   ├── Dashboard2.jsx          (authenticated home dashboard)
+    │   │   ├── AllLinks.jsx            (main bookmark list)
+    │   │   ├── AllBookmarks.jsx        (alternative bookmark list view)
+    │   │   ├── Archived.jsx
+    │   │   ├── Tags.jsx
+    │   │   ├── TagBookmarks.jsx
+    │   │   └── Profile.jsx
+    │   └── assets/                     
+    ├── public/
+    │   └── vite.svg                    
+    ├── index.html
+    ├── vite.config.js             
+    └── package.json                

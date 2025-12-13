@@ -9,6 +9,7 @@ class UserBookmark(db.Model):
     title = db.Column(db.String(255), nullable=False, default='Untitled')
     notes = db.Column(db.Text, default='')
     archived = db.Column(db.Boolean, default=False)
+    is_favourite = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
@@ -21,6 +22,7 @@ class UserBookmark(db.Model):
             'title': self.title,
             'notes': self.notes,
             'archived': self.archived,
+            'is_favourite': self.is_favourite,
             'created_at': self.created_at.isoformat() + 'Z',
             'updated_at': self.updated_at.isoformat() + 'Z' if self.updated_at else None
         }

@@ -310,16 +310,16 @@ def list_tags():
 
     return jsonify(tags), 200
 
-
 # LIST ALL BOOKMARKS (NO JINJA)
 @bp.route('/bookmarks', methods=['GET'])
 @login_required
 def list_bookmarks():
     user_id = current_user.id
-    # print(user_id)
+
     tag_filter = request.args.get('tag')
     q = request.args.get('q')
     archived_filter = request.args.get('archived')
+    favourite_filter = request.args.get('favourite')
 
     query = db.session.query(Bookmark).join(UserBookmark).filter(
         UserBookmark.user_id == user_id
@@ -344,11 +344,16 @@ def list_bookmarks():
         )
 
     if archived_filter is not None:
-        query = query.filter(UserBookmark.archived == (archived_filter == 'true'))
+        query = query.filter(
+            UserBookmark.archived == (archived_filter == 'true')
+        )
+
+    if favourite_filter is not None:
+        query = query.filter(
+            UserBookmark.is_favourite == (favourite_filter == 'true')
+        )
 
     bookmarks = query.order_by(UserBookmark.created_at.desc()).all()
-
-    # print(f"testing: ",bookmarks)
 
     return jsonify({
         "bookmarks": [b.to_dict(user_id=user_id) for b in bookmarks],
@@ -379,6 +384,20 @@ def gen_qr(bookmark_id):
         "url": bookmark.url
     }), 200
 
+@bp.route('/bookmarks/<int:bookmark_id>/favourite', methods=['PATCH'])
+@login_required
+def toggle_favourite(bookmark_id):
+    user_id = current_user.id
+    ub = UserBookmark.query.filter_by(user_id=user_id, bookmark_id=bookmark_id).first()
+    
+    if not ub:
+        return jsonify({"error": "Bookmark not found"}), 404
+    
+    ub.is_favourite = not ub.is_favourite
+    ub.updated_at = datetime.utcnow()
+    db.session.commit()
+    
+    return jsonify({"message": "Favourite toggled", "is_favourite": ub.is_favourite}), 200
 
 # ERROR HANDLERS (JSON ONLY)
 @bp.errorhandler(400)

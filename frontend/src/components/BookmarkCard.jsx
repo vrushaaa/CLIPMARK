@@ -223,6 +223,10 @@ function BookmarkCard({
   url,
   notes,
   tags = [],
+  isFavourite = false,  
+  isArchived = false,
+  createdAt,
+  onToggleFavourite,   
   isArchived = false,
   createdAt,
   onToggleArchive,
@@ -354,6 +358,26 @@ function BookmarkCard({
         )}
 
         <div className="flex gap-2 ml-auto">
+
+          {/* Favourite toggle */}
+          {onToggleFavourite && (
+            <button
+              type="button"
+              onClick={() => onToggleFavourite(id)}
+              className={`
+                px-3 py-1 text-xs rounded-full flex items-center gap-1
+                border transition-colors
+                ${isFavourite
+                  ? "bg-yellow-400 text-black border-yellow-500"
+                  : "bg-[var(--color-sky-aqua-800)] border-[var(--color-sky-aqua-600)] text-[var(--color-sky-aqua-50)]"
+                }
+                hover:bg-yellow-400 hover:text-black
+              `}
+            >
+              <span>⭐</span>
+              <span>{isFavourite ? "Unfavourite" : "Favourite"}</span>
+            </button>
+          )}
           {/* Favourite removed */}
 
           {/* Archive toggle */}
