@@ -28,16 +28,17 @@ const bookmarkService = {
 
   // Get archived bookmarks
   getArchivedBookmarks: async () => {
-    try {
-      const response = await api.get('/api/bookmarks?archived=true', {
-        headers: { Accept: 'application/json' }
-      });
-      // console.log(response)
-      return response;
-    } catch (error) {
-      throw error.response?.data || error;
-    }
-  },
+  try {
+    const response = await api.get('/api/bookmarks', {
+      params: { archived: true },
+      headers: { Accept: 'application/json' },
+    });
+    return response.data;   
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+},
+
 
   // Get single bookmark
   getBookmark: async (id) => {
@@ -112,6 +113,29 @@ const bookmarkService = {
       throw error.response?.data || error;
     }
   },
+
+  toggleFavourite: async (id) => {
+    try {
+      const response = await api.patch(`/api/bookmarks/${id}/favourite`);
+      console.log(response);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
+
+  getFavouriteBookmarks: async () => {
+  try {
+    const response = await api.get('/api/bookmarks', {
+      params: { favourite: 'true' }, 
+      headers: { Accept: 'application/json' },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error;
+  }
+},
+
 
   // Export bookmarks
   exportBookmarks: async () => {

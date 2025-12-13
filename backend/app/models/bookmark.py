@@ -51,6 +51,7 @@ class Bookmark(db.Model):
                     'title': ub.title,
                     'notes': ub.notes,
                     'archived': ub.archived,
+                    'is_favourite': ub.is_favourite,
                     'created_at': ub.created_at.isoformat() + 'Z',
                     'updated_at': ub.updated_at.isoformat() + 'Z' if ub.updated_at else None
                 })

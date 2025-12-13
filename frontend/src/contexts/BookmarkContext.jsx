@@ -1,10 +1,11 @@
-import { createContext, useContext, useState, useCallback } from 'react';
-import bookmarkService from '../services/bookmarkService';
+import { createContext, useContext, useState, useCallback } from "react";
+import bookmarkService from "../services/bookmarkService";
 
 const BookmarkContext = createContext(null);
 
 export const BookmarkProvider = ({ children }) => {
   const [bookmarks, setBookmarks] = useState([]);
+  const [favouriteBookmarks, setFavouriteBookmarks] = useState([]); 
   const [archivedBookmarks, setArchivedBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -18,7 +19,7 @@ export const BookmarkProvider = ({ children }) => {
       setBookmarks(data.bookmarks || []);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to fetch bookmarks');
+      setError(err.message || "Failed to fetch bookmarks");
       throw err;
     } finally {
       setLoading(false);
@@ -34,7 +35,7 @@ export const BookmarkProvider = ({ children }) => {
       setArchivedBookmarks(data.bookmarks || []);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to fetch archived bookmarks');
+      setError(err.message || "Failed to fetch archived bookmarks");
       throw err;
     } finally {
       setLoading(false);
@@ -49,13 +50,31 @@ export const BookmarkProvider = ({ children }) => {
       const data = await bookmarkService.getAllBookmarks(params);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to fetch bookmarks');
+      setError(err.message || "Failed to fetch bookmarks");
       throw err;
     } finally {
       setLoading(false);
     }
   }, []);
 
+  // Fetch all bookmarks with favourite= true
+  const fetchFavouriteBookmarks = useCallback(async () => {
+    try {
+      const data = await bookmarkService.getAllBookmarks({
+        favourite: true,  
+      });
+     setFavouriteBookmarks(
+  (data.bookmarks || []).map((b) => ({
+    ...b,
+    isFavourite: true,              
+    isArchived: b.is_archived,      
+  }))
+);
+      return data;
+    } catch (err) {
+      throw err;
+    }
+  }, []);
   // Get single bookmark
   const getBookmark = useCallback(async (id) => {
     try {
@@ -63,7 +82,7 @@ export const BookmarkProvider = ({ children }) => {
       const data = await bookmarkService.getBookmark(id);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to fetch bookmark');
+      setError(err.message || "Failed to fetch bookmark");
       throw err;
     }
   }, []);
@@ -73,17 +92,17 @@ export const BookmarkProvider = ({ children }) => {
     try {
       setError(null);
       const newBookmark = await bookmarkService.createBookmark(bookmarkData);
-      
+
       // Add to appropriate list
       if (newBookmark.archived) {
-        setArchivedBookmarks(prev => [newBookmark, ...prev]);
+        setArchivedBookmarks((prev) => [newBookmark, ...prev]);
       } else {
-        setBookmarks(prev => [newBookmark, ...prev]);
+        setBookmarks((prev) => [newBookmark, ...prev]);
       }
-      
+
       return newBookmark;
     } catch (err) {
-      setError(err.message || 'Failed to create bookmark');
+      setError(err.message || "Failed to create bookmark");
       throw err;
     }
   }, []);
@@ -92,19 +111,22 @@ export const BookmarkProvider = ({ children }) => {
   const updateBookmark = useCallback(async (id, bookmarkData) => {
     try {
       setError(null);
-      const updatedBookmark = await bookmarkService.updateBookmark(id, bookmarkData);
-      
+      const updatedBookmark = await bookmarkService.updateBookmark(
+        id,
+        bookmarkData
+      );
+
       // Update in appropriate list
-      setBookmarks(prev =>
-        prev.map(b => (b.id === id ? updatedBookmark : b))
+      setBookmarks((prev) =>
+        prev.map((b) => (b.id === id ? updatedBookmark : b))
       );
-      setArchivedBookmarks(prev =>
-        prev.map(b => (b.id === id ? updatedBookmark : b))
+      setArchivedBookmarks((prev) =>
+        prev.map((b) => (b.id === id ? updatedBookmark : b))
       );
-      
+
       return updatedBookmark;
     } catch (err) {
-      setError(err.message || 'Failed to update bookmark');
+      setError(err.message || "Failed to update bookmark");
       throw err;
     }
   }, []);
@@ -114,14 +136,13 @@ export const BookmarkProvider = ({ children }) => {
     try {
       setError(null);
       await bookmarkService.deleteBookmark(id);
-      
-      // Remove from both lists
-      setBookmarks(prev => prev.filter(b => b.id !== id));
-      setArchivedBookmarks(prev => prev.filter(b => b.id !== id));
-      
+
+      setBookmarks((prev) => prev.filter((b) => b.id !== id));
+      setArchivedBookmarks((prev) => prev.filter((b) => b.id !== id));
+
       return { success: true };
     } catch (err) {
-      setError(err.message || 'Failed to delete bookmark');
+      setError(err.message || "Failed to delete bookmark");
       throw err;
     }
   }, []);
@@ -131,19 +152,19 @@ export const BookmarkProvider = ({ children }) => {
     try {
       setError(null);
       const updatedBookmark = await bookmarkService.toggleArchive(id);
-      
+
       // Move between lists
       if (updatedBookmark.archived) {
-        setBookmarks(prev => prev.filter(b => b.id !== id));
-        setArchivedBookmarks(prev => [updatedBookmark, ...prev]);
+        setBookmarks((prev) => prev.filter((b) => b.id !== id));
+        setArchivedBookmarks((prev) => [updatedBookmark, ...prev]);
       } else {
-        setArchivedBookmarks(prev => prev.filter(b => b.id !== id));
-        setBookmarks(prev => [updatedBookmark, ...prev]);
+        setArchivedBookmarks((prev) => prev.filter((b) => b.id !== id));
+        setBookmarks((prev) => [updatedBookmark, ...prev]);
       }
-      
+
       return updatedBookmark;
     } catch (err) {
-      setError(err.message || 'Failed to toggle archive');
+      setError(err.message || "Failed to toggle archive");
       throw err;
     }
   }, []);
@@ -155,10 +176,43 @@ export const BookmarkProvider = ({ children }) => {
       const data = await bookmarkService.getQRCode(id);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to get QR code');
+      setError(err.message || "Failed to get QR code");
       throw err;
     }
   }, []);
+
+  const toggleFavourite = useCallback(async (id) => {
+  try {
+    const updated = await bookmarkService.toggleFavourite(id);
+
+    // Update main bookmarks list
+    setBookmarks((prev) =>
+      prev.map((b) =>
+        b.id === id
+          ? { ...b, isFavourite: updated.is_favourite }
+          : b
+      )
+    );
+
+    // Update favourite list
+    setFavouriteBookmarks((prev) => {
+      if (updated.is_favourite) {
+        const full = bookmarks.find((b) => b.id === id);
+        return full
+          ? [...prev, { ...full, isFavourite: true }]
+          : prev;
+      } else {
+        // ⭐ REMOVE FROM FAVOURITES PAGE
+        return prev.filter((b) => b.id !== id);
+      }
+    });
+
+    return updated;
+  } catch (err) {
+    throw err;
+  }
+}, [bookmarks]);
+
 
   // Export bookmarks
   const exportBookmarks = useCallback(async () => {
@@ -167,7 +221,7 @@ export const BookmarkProvider = ({ children }) => {
       const result = await bookmarkService.exportBookmarks();
       return result;
     } catch (err) {
-      setError(err.message || 'Failed to export bookmarks');
+      setError(err.message || "Failed to export bookmarks");
       throw err;
     }
   }, []);
@@ -177,6 +231,9 @@ export const BookmarkProvider = ({ children }) => {
     archivedBookmarks,
     loading,
     error,
+    favouriteBookmarks,           
+    fetchFavouriteBookmarks,      
+    toggleFavourite,
     fetchBookmarks,
     fetchArchivedBookmarks,
     fetchAllBookmarks,
@@ -199,7 +256,7 @@ export const BookmarkProvider = ({ children }) => {
 export const useBookmarks = () => {
   const context = useContext(BookmarkContext);
   if (!context) {
-    throw new Error('useBookmarks must be used within a BookmarkProvider');
+    throw new Error("useBookmarks must be used within a BookmarkProvider");
   }
   return context;
 };

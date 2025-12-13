@@ -105,6 +105,24 @@ export default function Dashboard() {
   };
 
   // ---------------------
+  // TOGGLE FAVOURITE
+  // ---------------------
+  const handleToggleFavourite = async (id) => {
+    try {
+      const response = await bookmarkService.toggleFavourite(id);
+      
+      // Update local state optimistically
+      setBookmarks((prev) =>
+        prev.map((bm) =>
+          bm.id === id ? { ...bm, is_favourite: response.is_favourite } : bm
+        )
+      );
+    } catch (err) {
+      alert("Failed to toggle favourite");
+    }
+  };
+
+  // ---------------------
   // DELETE
   // ---------------------
   const handleDelete = (id) => {
@@ -295,13 +313,14 @@ export default function Dashboard() {
                     url={bm.url}
                     notes={bm.notes}
                     tags={bm.tags || []}
-                    isFavourite={bm.is_favourite}
+                    isFavourite={bm.is_favourite}           
                     isArchived={bm.is_archived}
                     createdAt={bm.createdAt}
                     onShowQR={showQR}
                     onToggleArchive={() => handleToggleArchive(bm.id)}
                     onDelete={() => handleDelete(bm.id)}
                     onEdit={() => handleEdit(bm.id)}
+                    onToggleFavourite={() => handleToggleFavourite(bm.id)}  
                   />
                 ))}
               </div>

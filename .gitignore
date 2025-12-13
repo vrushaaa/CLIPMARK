@@ -72,3 +72,5 @@ docker-compose.override.yml
 
 # Local development artifacts
 *.pid
+
+migrations/
