@@ -10,32 +10,35 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
+import Dashboard2 from "./pages/Dashboard2";
+import AllBookmark from "./pages/AllBookmark";
+import Tags from "./pages/Tags"
+import AllLinks from "./pages/AllLinks";
+import TagBookmarks from "./pages/TagBookmarks";
 
 function App() {
   const [data, setData] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/test")
-      .then((res) => res.json())
-      .then((data) => setData(data.message))
-      .catch((err) => console.error(err));
-  }, []);
-
   return (
     <Router>
       {/* Your existing navbar component */}
-      <NavBar />
+      {/* <NavBar /> */}
 
       {/* Routes for all pages */}
       <div className="pt-0">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/login" element={<Login />} />
+          <Route path="/auth/signup" element={<Signup />} />
+          <Route path="/auth/forgot" element={<ForgotPassword />} />
           <Route path="/api/favourites" element={<FavouriteBookmark />} />
           <Route path="/api/archived" element={<Archived />} />
-          <Route path="/forgot" element={<ForgotPassword />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/api/profile" element={<Profile />} />
+          <Route path="/api/dashboard" element={<Dashboard2 />} />
+          <Route path="/api/bookmarks" element={<AllLinks/>} />
+          <Route path="/api/tags" element={<Tags/>}/>
+          {/* <Route path="/api/tags" element={<TagBookmarks/>}/> */}
+          <Route path="/tags/:tagName" element={<TagBookmarks />}/>
         </Routes>
       </div>
 
@@ -48,25 +51,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-<div className="dark:bg-slate-900 bg-[#ffffff] h-full min-h-screen transition-colors duration-300">
-  <NavBar></NavBar>
-
-  {/* <h1>React + Flask Test</h1>
-  <p>{data || "Loading..."}</p> */}
-  
-  {/* <Home></Home> */}
-  {/* <Signup></Signup> */}
-  {/* <Login></Login> */}
-
-
-  {/* <Archived></Archived> */}
-  {/* <FavouriteBookmark></FavouriteBookmark> */}
-  {/* <BookmarkCard></BookmarkCard> */}
-
-
-  {/* <Button children={"Submit"}></Button> */}
-</div>

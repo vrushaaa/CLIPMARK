@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Bookmark, Star, Archive, Tag, User, Send } from "lucide-react";
+import Navbar from "../components/NavBar";
 
 // Primary color: #48CAE4 (Cyan/Aqua)
 
@@ -14,7 +15,8 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-[var(--color-sky-aqua-100)] dark:bg-slate-900 transition-colors duration-500 flex flex-col">
-
+      <Navbar/>
+      
       {/* Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
         <div className="max-w-4xl w-full">
@@ -34,13 +36,13 @@ function Home() {
           {/* CTA Buttons */}
           <div className="flex justify-center gap-4 mb-16">
             <Link 
-              to="/signup" 
+              to="/auth/signup" 
               className="px-8 py-3 rounded-full text-lg font-bold bg-[#48CAE4] text-slate-900 hover:bg-cyan-400 transition-all duration-300 shadow-xl shadow-cyan-500/30"
             >
               Create Account
             </Link>
             <Link 
-              to="/login" 
+              to="/auth/login" 
               className={`px-8 py-3 rounded-full text-lg font-bold border-2 border-[#48CAE4] ${textPrimary} hover:bg-[#48CAE4]/10 transition-colors duration-300`}
             >
               Sign In
