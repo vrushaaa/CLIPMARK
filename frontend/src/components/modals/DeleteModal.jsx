@@ -2,7 +2,7 @@ import React from "react";
 import { Trash2, X } from "lucide-react";
 import Button from "../Button";
 
-export default function DeleteModal({ open, onClose, onDelete, loading }) {
+export default function DeleteModal({ open, onClose, onConfirm, loading }) {
   if (!open) return null;
 
   return (
@@ -26,7 +26,7 @@ export default function DeleteModal({ open, onClose, onDelete, loading }) {
             </Button>
             <Button
               className="bg-red-600 hover:bg-red-700"
-              onClick={onDelete}
+              onClick={onConfirm}
               disabled={loading}
             >
               {loading ? "Deleting..." : "Delete"}

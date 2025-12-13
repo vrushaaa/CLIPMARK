@@ -99,7 +99,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
           {isLoggedIn && (
             <>
               <Link
-                to="/profile"
+                to="/api/profile"
                 className="flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-[#48CAE4] transition"
               >
                 <User size={16} /> Profile

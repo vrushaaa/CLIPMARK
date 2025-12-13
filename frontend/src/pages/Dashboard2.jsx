@@ -77,7 +77,7 @@ export default function HomeDashboard() {
           <div className="flex flex-col md:flex-row items-center justify-center gap-8 mt-10 w-full max-w-4xl">
             {/* Bookmarks Card */}
             <a
-              href="/bookmarks"
+              href="/api/bookmarks"
               className="w-full md:w-1/2 p-8 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-[#4CCCE6] hover:shadow-lg transition shadow-sm text-left"
             >
               <h3 className="text-2xl font-bold mb-3 text-[#1999b3] dark:text-[#4CCCE6] flex items-center gap-2">
@@ -90,7 +90,7 @@ export default function HomeDashboard() {
 
             {/* Tags Card */}
             <a
-              href="/tags"
+              href="/api/tags"
               className="w-full md:w-1/2 p-8 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-[#4CCCE6] hover:shadow-lg transition shadow-sm text-left"
             >
               <h3 className="text-2xl font-bold mb-3 text-[#1999b3] dark:text-[#4CCCE6] flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function HomeDashboard() {
               Start organizing your digital world more efficiently.
             </p>
 
-            <a href="/bookmarks">
+            <a href="/api/bookmarks">
               <Button className="px-10 py-4 text-lg">Go to Bookmarks</Button>
             </a>
           </div>

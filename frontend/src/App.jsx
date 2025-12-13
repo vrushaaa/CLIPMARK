@@ -11,7 +11,10 @@ import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import Profile from "./pages/Profile";
 import Dashboard2 from "./pages/Dashboard2";
-import AllBookmark from "./pages/AllBookmark"
+import AllBookmark from "./pages/AllBookmark";
+import Tags from "./pages/Tags"
+import AllLinks from "./pages/AllLinks";
+import TagBookmarks from "./pages/TagBookmarks";
 
 function App() {
   const [data, setData] = useState(null);
@@ -28,12 +31,14 @@ function App() {
           <Route path="/auth/login" element={<Login />} />
           <Route path="/auth/signup" element={<Signup />} />
           <Route path="/auth/forgot" element={<ForgotPassword />} />
-          {/* <Route path="/auth/logout" element={<Login />} /> */}
           <Route path="/api/favourites" element={<FavouriteBookmark />} />
           <Route path="/api/archived" element={<Archived />} />
           <Route path="/api/profile" element={<Profile />} />
           <Route path="/api/dashboard" element={<Dashboard2 />} />
-          <Route path="/api/bookmarks" element={<AllBookmark/>} />
+          <Route path="/api/bookmarks" element={<AllLinks/>} />
+          <Route path="/api/tags" element={<Tags/>}/>
+          {/* <Route path="/api/tags" element={<TagBookmarks/>}/> */}
+          <Route path="/tags/:tagName" element={<TagBookmarks />}/>
         </Routes>
       </div>
 
@@ -46,4 +51,3 @@ function App() {
 }
 
 export default App;
-

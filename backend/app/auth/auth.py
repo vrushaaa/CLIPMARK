@@ -106,6 +106,7 @@ def logout():
 # AUTH CHECK (OPTIONAL)
 # ----------------------------
 @auth.route('/me', methods=['GET'])
+@login_required
 def check_auth():
     """React can call this to check if user is logged in."""
     if current_user.is_authenticated:

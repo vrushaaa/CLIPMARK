@@ -41,7 +41,7 @@ export default function AddBookmarkModal({
             placeholder="URL *"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 dark:text-white text-black"
           />
 
           <input
@@ -49,7 +49,7 @@ export default function AddBookmarkModal({
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-black"
           />
 
           <textarea
@@ -57,7 +57,7 @@ export default function AddBookmarkModal({
             placeholder="Notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-black"
           />
 
           <input
@@ -65,7 +65,7 @@ export default function AddBookmarkModal({
             placeholder="Tags (comma separated)"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-blacks"
           />
 
           <div className="flex justify-end gap-4">

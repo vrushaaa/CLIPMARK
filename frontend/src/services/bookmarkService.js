@@ -29,10 +29,11 @@ const bookmarkService = {
   // Get archived bookmarks
   getArchivedBookmarks: async () => {
     try {
-      const response = await api.get('/api/archived', {
+      const response = await api.get('/api/bookmarks?archived=true', {
         headers: { Accept: 'application/json' }
       });
-      return response.data;
+      // console.log(response)
+      return response;
     } catch (error) {
       throw error.response?.data || error;
     }

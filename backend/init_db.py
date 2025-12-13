@@ -1,5 +1,5 @@
 """
-LinkVault Dummy Data Initializer (Auth-Ready)
+CLIPMARK Dummy Data Initializer (Auth-Ready)
 Run:  python init_db.py
 """
 

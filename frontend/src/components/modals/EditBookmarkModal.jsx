@@ -40,7 +40,7 @@ export default function EditBookmarkModal({
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-black"
           />
 
           <textarea
@@ -48,7 +48,7 @@ export default function EditBookmarkModal({
             placeholder="Notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 dark:text-white text-black"
           />
 
           <input
@@ -56,13 +56,13 @@ export default function EditBookmarkModal({
             placeholder="Tags"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 dark:text-white text-black"
           />
 
           <select
             value={archived}
             onChange={(e) => setArchived(e.target.value)}
-            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700"
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 dark:text-white text-black"
           >
             <option value="false">Active</option>
             <option value="true">Archived</option>

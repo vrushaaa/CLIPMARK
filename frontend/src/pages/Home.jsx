@@ -36,13 +36,13 @@ function Home() {
           {/* CTA Buttons */}
           <div className="flex justify-center gap-4 mb-16">
             <Link 
-              to="/signup" 
+              to="/auth/signup" 
               className="px-8 py-3 rounded-full text-lg font-bold bg-[#48CAE4] text-slate-900 hover:bg-cyan-400 transition-all duration-300 shadow-xl shadow-cyan-500/30"
             >
               Create Account
             </Link>
             <Link 
-              to="/login" 
+              to="/auth/login" 
               className={`px-8 py-3 rounded-full text-lg font-bold border-2 border-[#48CAE4] ${textPrimary} hover:bg-[#48CAE4]/10 transition-colors duration-300`}
             >
               Sign In

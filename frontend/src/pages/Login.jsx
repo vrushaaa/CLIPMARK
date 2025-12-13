@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '../components/NavBar';
 import authService from '../services/authService';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login({ isDark, toggleTheme }) {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export default function Login({ isDark, toggleTheme }) {
       setLoading(false);
     }
   };
+ 
 
   return (
     <>

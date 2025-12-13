@@ -32,7 +32,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Redirect to login on 401
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     }
     return Promise.reject(error);
   }

@@ -316,7 +316,7 @@ def list_tags():
 @login_required
 def list_bookmarks():
     user_id = current_user.id
-
+    # print(user_id)
     tag_filter = request.args.get('tag')
     q = request.args.get('q')
     archived_filter = request.args.get('archived')
@@ -347,6 +347,8 @@ def list_bookmarks():
         query = query.filter(UserBookmark.archived == (archived_filter == 'true'))
 
     bookmarks = query.order_by(UserBookmark.created_at.desc()).all()
+
+    # print(f"testing: ",bookmarks)
 
     return jsonify({
         "bookmarks": [b.to_dict(user_id=user_id) for b in bookmarks],
