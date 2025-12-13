@@ -3,6 +3,7 @@ import { Moon, Sun, Paperclip, User, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import authService from "../services/authService";
+import Button from "./Button";
 
 export default function Navbar({ toggleSidebar, isSidebarOpen }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
@@ -36,7 +37,7 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
       await authService.logout();
       localStorage.removeItem("token");
       setIsLoggedIn(false);
-      navigate("/auth/login")
+      navigate("/auth/login");
     } catch (err) {
       console.error(err);
     }

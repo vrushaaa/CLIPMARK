@@ -26,10 +26,7 @@ export default function Sidebar() {
   return (
     // Sidebar background uses the dark teal colors
     <aside className="w-full bg-[#1999b3] dark:bg-[#0d4c59] text-white min-h-screen flex flex-col">
-      {/* Logo Top */}
-      <div className="p-6 border-b border-white/10 dark:border-white/5">
-        <h2 className="text-2xl font-bold"></h2>
-      </div>
+
 
       {/* Menu */}
       <nav className="flex-1 p-4">

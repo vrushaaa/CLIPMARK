@@ -1,18 +1,25 @@
 import api from './api';
 
 const bookmarkService = {
-  // Get all bookmarks with filters
-  getAllBookmarks: async (params = {}) => {
+  //Get all bookmarks with filters
+
+  getAllBookmarks: async ({ archived = false, q = "" } = {}) => {
     try {
-      const response = await api.get('/api/bookmarks', {
-        params,
-        headers: { Accept: 'application/json' }
+      const response = await api.get("/api/bookmarks", {
+        params: {
+          archived,
+          q,
+        },
+        headers: { Accept: "application/json" },
       });
+
       return response.data;
     } catch (error) {
       throw error.response?.data || error;
     }
   },
+
+
 
   // Get bookmarks for dashboard (non-archived)
   getDashboardBookmarks: async () => {
@@ -32,8 +39,7 @@ const bookmarkService = {
       const response = await api.get('/api/bookmarks?archived=true', {
         headers: { Accept: 'application/json' }
       });
-      // console.log(response)
-      return response;
+      return response.data;
     } catch (error) {
       throw error.response?.data || error;
     }
@@ -119,7 +125,7 @@ const bookmarkService = {
       const response = await api.get('/api/export', {
         responseType: 'blob'
       });
-      
+
       // Create download link
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -128,7 +134,7 @@ const bookmarkService = {
       document.body.appendChild(link);
       link.click();
       link.remove();
-      
+
       return { success: true };
     } catch (error) {
       throw error.response?.data || error;
