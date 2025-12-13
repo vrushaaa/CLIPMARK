@@ -3,14 +3,13 @@ import Sidebar from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import BookmarkCard from "../components/BookmarkCard";
 import Button from "../components/Button";
-import { Menu, Plus } from "lucide-react";
-
+import { Menu, Plus, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import bookmarkService from "../services/bookmarkService";
-
 import QRModal from "../components/modals/QRModal";
 import DeleteModal from "../components/modals/DeleteModal";
 import AddBookmarkModal from "../components/modals/AddBookmarkModal";
 import EditBookmarkModal from "../components/modals/EditBookmarkModal";
+import Pagination from "../components/Pagination";
 
 export default function Dashboard() {
   // Layout State
@@ -42,6 +41,10 @@ export default function Dashboard() {
   const [editTags, setEditTags] = useState("");
   const [editArchived, setEditArchived] = useState("false");
   const [editLoading, setEditLoading] = useState(false);
+
+  // pagination
+  const ITEMS_PER_PAGE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
 
   // ---------------------
   // FETCH BOOKMARKS
@@ -225,6 +228,66 @@ export default function Dashboard() {
     }
   };
 
+  const totalPages = Math.ceil(bookmarks.length / ITEMS_PER_PAGE);
+
+  const paginatedBookmarks = bookmarks.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [bookmarks.length]);
+
+  // Searching
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    console.log("Searching for ", searchQuery);
+
+    try {
+      const res = await bookmarkService.getAllBookmarks({
+        archived: false,
+        q: searchQuery,
+      });
+
+      setBookmarks(res.bookmarks || []);
+    } catch (err) {
+      setError(err.error || "Search Failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const clearSearch = async () => {
+    setSearchQuery("");
+    setLoading(true);
+
+    try {
+      const res = await bookmarkService.getAllBookmarks({ archived: false });
+      setBookmarks(res.bookmarks || []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      try {
+        const res = await bookmarkService.getAllBookmarks({
+          archived: false,
+          q: searchQuery,
+        });
+        setBookmarks(res.bookmarks || []);
+      } catch {}
+    }, 400); // debounce
+
+    return () => clearTimeout(delay);
+  }, [searchQuery]);
 
   return (
     <>
@@ -288,6 +351,32 @@ export default function Dashboard() {
               </Button>
             </div>
 
+            {/* Search */}
+            <form
+              onSubmit={handleSearch}
+              className="max-w-xl w-full mx-auto mb-8"
+            >
+              <div className="flex items-center bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 px-4 py-2 rounded-xl gap-3">
+                <Search className="text-[#1999b3] dark:text-[#4CCCE6]" />
+                <input
+                  type="text"
+                  placeholder="Search bookmarks..."
+                  className="flex-1 bg-transparent outline-none text-slate-900 dark:text-slate-200"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={clearSearch}
+                    className="text-slate-400 hover:text-red-500"
+                  >
+                    <X size={18} />
+                  </button>
+                )}
+              </div>
+            </form>
+
             <p
               id="add-link-message"
               className="text-center text-green-500 dark:text-green-400 mb-4 h-6"
@@ -305,7 +394,7 @@ export default function Dashboard() {
               </p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-20">
-                {bookmarks.map((bm) => (
+                {paginatedBookmarks.map((bm) => (
                   <BookmarkCard
                     key={bm.id}
                     id={bm.id}
@@ -325,6 +414,12 @@ export default function Dashboard() {
                 ))}
               </div>
             )}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </main>
         </div>
       </div>
