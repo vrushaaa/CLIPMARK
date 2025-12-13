@@ -214,14 +214,8 @@
 
 // export default BookmarkCard;
 
-
-
 import React from "react";
-import {
-  QrCode,
-  Trash2,
-  Edit2,
-} from "lucide-react";
+import { QrCode, Trash2, Edit2 } from "lucide-react";
 
 function BookmarkCard({
   id,
@@ -229,10 +223,8 @@ function BookmarkCard({
   url,
   notes,
   tags = [],
-  // isFavourite = false,  // removed
   isArchived = false,
   createdAt,
-  // onToggleFavourite,    // removed
   onToggleArchive,
   onShowQR,
   onEdit,
@@ -269,7 +261,6 @@ function BookmarkCard({
           </a>
 
           <div className="flex items-center gap-2">
-
             {onShowQR && (
               <button
                 onClick={() => onShowQR(id)}
@@ -363,14 +354,13 @@ function BookmarkCard({
         )}
 
         <div className="flex gap-2 ml-auto">
-
           {/* Favourite removed */}
 
           {/* Archive toggle */}
           {onToggleArchive && (
             <button
               type="button"
-              onClick={() => onToggleArchive(id, !isArchived)}
+              onClick={() => onToggleArchive(id)}
               className={`
                 px-3 py-1 text-xs rounded-full flex items-center gap-1
                 border
@@ -383,11 +373,9 @@ function BookmarkCard({
                 hover:text-[var(--color-sky-aqua-950)]
               `}
             >
-              <span>🗄️</span>
               <span>{isArchived ? "Unarchive" : "Archive"}</span>
             </button>
           )}
-
         </div>
       </div>
     </div>

@@ -2,15 +2,14 @@ import React, { useEffect, useState } from "react";
 import BookmarkCard from "../components/BookmarkCard";
 import Sidebar from "../components/Sidebar";
 import NavBar from "../components/NavBar";
-import { Menu } from "lucide-react";
+import { Menu, ChevronLeft, ChevronRight } from "lucide-react";
 import api from "../services/api";
 import bookmarkService from "../services/bookmarkService";
-
 import QRModal from "../components/modals/QRModal";
 import DeleteModal from "../components/modals/DeleteModal";
 import EditBookmarkModal from "../components/modals/EditBookmarkModal";
 import AddBookmarkModal from "../components/modals/AddBookmarkModal";
-
+import Pagination from "../components/Pagination";
 
 export default function Archived() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -45,10 +44,9 @@ export default function Archived() {
   useEffect(() => {
     const fetchArchived = async () => {
       try {
-        // const res = await api.get("api/bookmarks?archived=true");
         const res = await bookmarkService.getArchivedBookmarks();
-        // console.log(res)
-        setBookmarks(res.data.bookmarks || []);
+        console.log("ARCHIVED RESPONSE:", res);
+        setBookmarks(res.bookmarks || []);
       } catch (error) {
         console.error("Failed to fetch archived bookmarks:", error);
       } finally {
@@ -60,22 +58,14 @@ export default function Archived() {
   }, []);
 
   // ---------------- TOGGLE ARCHIVE ----------------
-  const handleToggleArchive = async (id, newValue) => {
+  const handleToggleArchive = async (id) => {
     try {
-      await api.patch(`/api/bookmarks/${id}/archive`, {
-        is_archived: newValue,
-      });
+      await bookmarkService.toggleArchive(id);
 
-      if (!newValue) {
-        // Remove from list if unarchived
-        setBookmarks((prev) => prev.filter((b) => b.id !== id));
-      } else {
-        setBookmarks((prev) =>
-          prev.map((b) => (b.id === id ? { ...b, is_archived: newValue } : b))
-        );
-      }
+      // Remove from archived list immediately
+      setBookmarks((prev) => prev.filter((b) => b.id !== id));
     } catch (err) {
-      console.error("Failed to toggle archive:", err);
+      console.error("Failed to unarchive", err);
     }
   };
 
@@ -99,64 +89,79 @@ export default function Archived() {
     setDeleteModalOpen(true);
   };
 
-const handleDeleteConfirm = async () => {
-  try {
-    await api.delete(`/api/bookmarks/${bookmarkIdToDelete}`);
+  const handleDeleteConfirm = async () => {
+    try {
+      await api.delete(`/api/bookmarks/${bookmarkIdToDelete}`);
 
-    setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkIdToDelete));
+      setBookmarks((prev) => prev.filter((b) => b.id !== bookmarkIdToDelete));
 
-    setDeleteModalOpen(false);
-    setBookmarkIdToDelete(null);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to delete bookmark");
-  }
-};
-const handleEdit = (id) => {
-  const bm = bookmarks.find((b) => b.id === id);
-  if (!bm) return;
+      setDeleteModalOpen(false);
+      setBookmarkIdToDelete(null);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete bookmark");
+    }
+  };
+  const handleEdit = (id) => {
+    const bm = bookmarks.find((b) => b.id === id);
+    if (!bm) return;
 
-  setCurrentEditId(id);
-  setEditTitle(bm.title);
-  setEditNotes(bm.notes || "");
-  setEditTags((bm.tags || []).join(", "));
-  setEditArchived(bm.is_archived ? "true" : "false");
+    setCurrentEditId(id);
+    setEditTitle(bm.title);
+    setEditNotes(bm.notes || "");
+    setEditTags((bm.tags || []).join(", "));
+    setEditArchived(bm.is_archived ? "true" : "false");
 
-  setEditModalOpen(true);
-};
+    setEditModalOpen(true);
+  };
 
-const handleEditSubmit = async (e) => {
-  e.preventDefault();
-  setEditLoading(true);
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setEditLoading(true);
 
-  try {
-    const updated = {
-      title: editTitle,
-      notes: editNotes,
-      tags: editTags.split(",").map((t) => t.trim()),
-      archived: editArchived === "true",
-    };
+    try {
+      const updated = {
+        title: editTitle,
+        notes: editNotes,
+        tags: editTags.split(",").map((t) => t.trim()),
+        archived: editArchived === "true",
+      };
 
-    const res = await bookmarkService.updateBookmark(currentEditId, updated);
+      const res = await bookmarkService.updateBookmark(currentEditId, updated);
 
-    setBookmarks((prev) =>
-      prev.map((b) => (b.id === currentEditId ? res.bookmark : b))
-    );
+      setBookmarks((prev) =>
+        prev.map((b) => (b.id === currentEditId ? res.bookmark : b))
+      );
 
-    setEditModalOpen(false);
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update bookmark");
-  } finally {
-    setEditLoading(false);
-  }
-};
+      setEditModalOpen(false);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update bookmark");
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
-const handleAddBookmark = async (data) => {
-  const res = await bookmarkService.createBookmark(data);
-  setBookmarks((prev) => [res.bookmark, ...prev]);
-  setAddModalOpen(false);
-};
+  const handleAddBookmark = async (data) => {
+    const res = await bookmarkService.createBookmark(data);
+    setBookmarks((prev) => [res.bookmark, ...prev]);
+    setAddModalOpen(false);
+  };
+
+  // Pagination
+  const ITEMS_PER_PAGE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(bookmarks.length / ITEMS_PER_PAGE);
+
+  const paginatedBookmarks = bookmarks.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [bookmarks.length]);
 
   return (
     <>
@@ -206,10 +211,16 @@ const handleAddBookmark = async (data) => {
               <p className="text-slate-300">No archived bookmarks found.</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {bookmarks.map((bookmark) => (
+                {paginatedBookmarks.map((bookmark) => (
                   <BookmarkCard
                     key={bookmark.id}
-                    {...bookmark}
+                    id={bookmark.id}
+                    title={bookmark.title}
+                    url={bookmark.url}
+                    notes={bookmark.notes}
+                    tags={bookmark.tags}
+                    createdAt={bookmark.createdAt}
+                    isArchived={true} // ✅ IMPORTANT
                     onShowQR={() => showQR(bookmark.id)}
                     onEdit={() => handleEdit(bookmark.id)}
                     onDelete={() => handleDelete(bookmark.id)}
@@ -220,6 +231,12 @@ const handleAddBookmark = async (data) => {
                 ))}
               </div>
             )}
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
           </main>
         </div>
       </div>
