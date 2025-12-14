@@ -129,7 +129,12 @@ function Profile() {
       await api.delete("/auth/me");
 
       toast.success("Account deleted successfully");
+      // 🔥 REMOVE AUTH DATA
+      localStorage.removeItem("token");
       localStorage.removeItem("user");
+
+      // 🔥 NOTIFY NAVBAR (same-tab update)
+      window.dispatchEvent(new Event("auth-change"));
 
       // Redirect after delete
       window.location.href = "/";
