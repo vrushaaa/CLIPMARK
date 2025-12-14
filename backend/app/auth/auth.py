@@ -5,9 +5,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import db, bcrypt
 from app.models.user import User
 import re
-
+from app.models.user_bookmark import UserBookmark
 auth = Blueprint('auth', __name__)
-
 
 # ----------------------------
 # SIGNUP (JSON ONLY)
@@ -188,6 +187,38 @@ def update_profile():
     except Exception as e:
         db.session.rollback()
         return jsonify({"error": "Failed to update profile"}), 500
+
+# ----------------------------
+# Delete account
+# ----------------------------
+@auth.route('/me', methods=['DELETE'])
+@login_required
+def delete_account():
+    try:
+        user_id = current_user.id
+        deleted = UserBookmark.query.filter_by(user_id=user_id).delete()
+        print(f"Deleted {deleted} UserBookmark entries for user {user_id}")  
+        
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            print(f"Deleted user {user_id}") 
+        else:
+            print("User not found for deletion")
+        
+        db.session.commit()
+        
+        logout_user()
+        
+        return jsonify({
+            "message": "Account and all data deleted successfully"
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        print(f"Delete error: {e}")  
+        return jsonify({"error": "Failed to delete account"}), 500
+    
     
 # ----------------------------
 # ERROR HANDLERS (JSON ONLY)
