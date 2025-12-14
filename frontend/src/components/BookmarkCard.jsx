@@ -1,5 +1,5 @@
 import React from "react";
-import { QrCode, Trash2, Edit2 } from "lucide-react";
+import { QrCode, Trash2, Edit2, Heart, Archive, ArchiveX } from "lucide-react";
 
 function BookmarkCard({
   id,
@@ -7,10 +7,10 @@ function BookmarkCard({
   url,
   notes,
   tags = [],
-  isFavourite = false,  
+  isFavourite = false,
   isArchived = false,
   createdAt,
-  onToggleFavourite,   
+  onToggleFavourite,
   onToggleArchive,
   onShowQR,
   onEdit,
@@ -19,14 +19,23 @@ function BookmarkCard({
   return (
     <div
       className="
-        rounded-2xl p-4 md:p-5 shadow-md border
-        bg-[var(--color-sky-aqua-00)]
-        dark:bg-[var(--color-sky-aqua-900)]
-        border-[var(--color-sky-aqua-700)]
-        hover:border-[var(--color-sky-aqua-400)]
-        transition
-        flex flex-col gap-3
-      "
+    rounded-2xl p-4 md:p-5 cursor-pointer
+    border shadow-md
+    bg-[var(--color-sky-aqua-00)]
+    dark:bg-[var(--color-sky-aqua-900)]
+    border-[var(--color-sky-aqua-700)]
+
+    transition-all duration-300 ease-out
+    transform
+
+    hover:shadow-2xl
+    hover:scale-[1.03]
+    hover:bg-[var(--color-sky-aqua-50)]
+    dark:hover:bg-slate-700
+    hover:border-[var(--color-sky-aqua-400)]
+
+    flex flex-col gap-3
+  "
     >
       {/* Title + URL */}
       <div>
@@ -145,19 +154,22 @@ function BookmarkCard({
             <button
               onClick={() => onToggleFavourite(id)}
               className={`
-      px-3 py-1 text-xs rounded-full flex items-center gap-1
-      border
+      px-3 py-1 rounded-full flex items-center
+      border transition
       ${
         isFavourite
-          ? "bg-red-500/20 border-red-400 text-red-300"
+          ? "bg-red-500/20 border-red-400 text-red-500"
           : "bg-[var(--color-sky-aqua-800)] border-[var(--color-sky-aqua-600)] text-white"
       }
       hover:bg-red-500/30
-      transition
     `}
+              aria-label="Toggle favourite"
             >
-              <span>{isFavourite ? "💔" : "❤️"}</span>
-              <span>{isFavourite ? "Unfavourite" : "Favourite"}</span>
+              {isFavourite ? (
+                <Heart size={16} fill="currentColor" />
+              ) : (
+                <Heart size={16} />
+              )}
             </button>
           )}
 
@@ -180,7 +192,13 @@ function BookmarkCard({
                 hover:text-[var(--color-sky-aqua-950)]
               `}
             >
-              <span>{isArchived ? "Unarchive" : "Archive"}</span>
+              <span>
+                {isArchived ? (
+                  <ArchiveX size={16} color="#ffffff" />
+                ) : (
+                  <Archive size={16} color="#ffffff" />
+                )}
+              </span>
             </button>
           )}
         </div>

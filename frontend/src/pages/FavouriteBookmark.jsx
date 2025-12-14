@@ -23,7 +23,7 @@ export default function Favourites() {
     getQRCode,
   } = useBookmarks();
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   // QR Modal
@@ -44,7 +44,6 @@ export default function Favourites() {
   const [editLoading, setEditLoading] = useState(false);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
-  const handleAddNew = () => setAddModalOpen(true);
 
   // FETCH FAVOURITES ON MOUNT
   useEffect(() => {
@@ -151,24 +150,22 @@ export default function Favourites() {
 
         {/* Sidebar */}
         <div
-          className={`fixed inset-y-0 left-0 z-40
-    lg:relative lg:inset-y-0 lg:translate-x-0
-    transition-transform duration-300 ease-in-out
-    ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
-    w-64
-    min-h-screen
-    overflow-y-auto
-    shrink-0
-  `}
+          className={`fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300 
+                  ${
+                    isSidebarOpen
+                      ? "w-64 translate-x-0"
+                      : "w-64 -translate-x-full lg:w-0"
+                  } overflow-y-auto`}
         >
           <Sidebar />
-          {isSidebarOpen && (
-            <div
-              onClick={toggleSidebar}
-              className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            />
-          )}
         </div>
+
+        {isSidebarOpen && (
+          <div
+            onClick={toggleSidebar}
+            className="fixed inset-0 bg-black/40 z-30 lg:hidden"
+          />
+        )}
 
         {/* Main Content */}
         <div className="flex-1 flex flex-col">

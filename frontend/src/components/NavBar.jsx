@@ -127,19 +127,6 @@ export default function Navbar({ toggleSidebar, isSidebarOpen }) {
             <Sun className="w-5 h-5 text-yellow-500" />
           )}
         </button>
-
-        {/* TEMP BUTTON: Click to simulate login while backend not added */}
-        {/* {!isLoggedIn && (
-          <button
-            onClick={() => {
-              alert("Logged In (Simulated)");
-              setIsLoggedIn(true);
-            }}
-            className="text-xs px-3 py-1 rounded-full bg-[var(--color-sky-aqua-500)] text-black"
-          >
-            Simulate Login
-          </button>
-        )} */}
       </div>
     </nav>
   );

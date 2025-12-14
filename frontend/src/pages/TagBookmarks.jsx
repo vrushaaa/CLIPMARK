@@ -19,7 +19,7 @@ export default function TagBookmarks() {
     const loadBookmarks = async () => {
       try {
         const data = await tagService.getBookmarksByTag(tagName);
-        setBookmarks(data);
+        setBookmarks(data.bookmarks);
       } catch (error) {
         console.error("Failed to load tag-specific bookmarks:", error);
       } finally {
@@ -34,7 +34,6 @@ export default function TagBookmarks() {
       <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
       <div className="flex min-h-screen bg-[var(--color-sky-aqua-50)] dark:bg-slate-900 transition-colors">
-
         {/* ---------------- MOBILE SIDEBAR BUTTON ---------------- */}
         <button
           onClick={toggleSidebar}
@@ -47,7 +46,11 @@ export default function TagBookmarks() {
         <div
           className={`fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 
           transition-transform duration-300 ease-in-out 
-          ${isSidebarOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full lg:w-0"} 
+          ${
+            isSidebarOpen
+              ? "w-64 translate-x-0"
+              : "w-64 -translate-x-full lg:w-0"
+          } 
           overflow-y-auto`}
         >
           <Sidebar />
@@ -62,7 +65,6 @@ export default function TagBookmarks() {
 
         {/* ---------------- MAIN CONTENT ---------------- */}
         <div className="flex-1 p-4 md:p-8">
-
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-extrabold text-[var(--color-sky-aqua-900)] dark:text-white">
@@ -70,21 +72,26 @@ export default function TagBookmarks() {
             </h1>
 
             <p className="text-sm text-[var(--color-sky-aqua-700)] dark:text-slate-300 mt-1">
-              Bookmarks tagged with <span className="font-bold">"{tagName}"</span>
+              Bookmarks tagged with{" "}
+              <span className="font-bold">"{tagName}"</span>
             </p>
           </div>
 
           {/* Loading State */}
           {loading ? (
-            <p className="text-slate-700 dark:text-slate-300">Loading bookmarks...</p>
+            <p className="text-slate-700 dark:text-slate-300">
+              Loading bookmarks...
+            </p>
           ) : bookmarks.length === 0 ? (
             // ---------------- EMPTY STATE ----------------
-            <div className="
+            <div
+              className="
               p-6 rounded-xl shadow-md 
               bg-white dark:bg-slate-800 
               border border-[var(--color-sky-aqua-200)] dark:border-slate-700
               transition-all duration-300
-            ">
+            "
+            >
               <p className="text-[var(--color-sky-aqua-900)] dark:text-white font-semibold">
                 No bookmarks found for #{tagName}
               </p>
@@ -105,7 +112,9 @@ export default function TagBookmarks() {
                 >
                   <BookmarkCard
                     {...bm}
-                    onToggleFavourite={() => alert("Backend integration pending")}
+                    onToggleFavourite={() =>
+                      alert("Backend integration pending")
+                    }
                     onToggleArchive={() => alert("Backend integration pending")}
                   />
                 </div>

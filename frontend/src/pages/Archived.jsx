@@ -166,7 +166,8 @@ export default function Archived() {
   return (
     <>
       <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-      <div className="flex min-h-screen bg-[var(--color-sky-aqua-50)] dark:bg-slate-900 transition-colors">
+
+      <div className="flex min-h-screen bg-[var(--color-sky-aqua-50)] dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
         {/* Mobile toggle */}
         <button
           onClick={toggleSidebar}
@@ -195,12 +196,12 @@ export default function Archived() {
         )}
 
         <div className="flex-1 flex flex-col">
-          <main className="flex-1 p-4 md:p-8">
-            <header className="mb-8">
+          <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full">
+            <header className="mb-8 mt-10">
               <h1 className="text-3xl font-extrabold text-[var(--color-sky-aqua-900)] dark:text-white">
                 Archived Bookmarks
               </h1>
-              <p className="text-sm text-[var(--color-sky-aqua-700)] dark:text-slate-300">
+              <p className="text-slate-600 dark:text-slate-400 mt-1">
                 Old bookmarks kept safely out of your main list.
               </p>
             </header>

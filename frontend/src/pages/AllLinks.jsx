@@ -113,7 +113,7 @@ export default function Dashboard() {
   const handleToggleFavourite = async (id) => {
     try {
       const response = await bookmarkService.toggleFavourite(id);
-      
+
       // Update local state optimistically
       setBookmarks((prev) =>
         prev.map((bm) =>
@@ -331,16 +331,9 @@ export default function Dashboard() {
             {/* HEADER */}
             <div className="flex justify-between items-center mb-10 mt-10">
               <div>
-                <h1 className="text-3xl md:text-4xl font-extrabold text-[#1999b3] dark:text-[#4CCCE6]">
-                  All Links
+                <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--color-sky-aqua-900)] dark:text-[var(--color-sky-aqua-50)]">
+                  All Bookmarks
                 </h1>
-
-                {summary && (
-                  <p className="text-slate-600 dark:text-slate-300">
-                    {summary.username} — {summary.total_bookmarks || 0}{" "}
-                    bookmarks
-                  </p>
-                )}
               </div>
 
               <Button
@@ -377,11 +370,6 @@ export default function Dashboard() {
               </div>
             </form>
 
-            <p
-              id="add-link-message"
-              className="text-center text-green-500 dark:text-green-400 mb-4 h-6"
-            />
-
             {/* BOOKMARK GRID */}
             {loading ? (
               <p>Loading...</p>
@@ -402,14 +390,14 @@ export default function Dashboard() {
                     url={bm.url}
                     notes={bm.notes}
                     tags={bm.tags || []}
-                    isFavourite={bm.is_favourite}           
+                    isFavourite={bm.is_favourite}
                     isArchived={bm.is_archived}
                     createdAt={bm.createdAt}
                     onShowQR={showQR}
                     onToggleArchive={() => handleToggleArchive(bm.id)}
                     onDelete={() => handleDelete(bm.id)}
                     onEdit={() => handleEdit(bm.id)}
-                    onToggleFavourite={() => handleToggleFavourite(bm.id)}  
+                    onToggleFavourite={() => handleToggleFavourite(bm.id)}
                   />
                 ))}
               </div>
