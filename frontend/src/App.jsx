@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Profile from "./pages/Profile";
 import Dashboard2 from "./pages/Dashboard2";
 import AllBookmark from "./pages/AllBookmark";
@@ -39,6 +40,7 @@ function App() {
           <Route path="/api/tags" element={<Tags/>}/>
           {/* <Route path="/api/tags" element={<TagBookmarks/>}/> */}
           <Route path="/tags/:tagName" element={<TagBookmarks />}/>
+          <Route path="/auth/reset-password/:token" element={<ResetPassword />} />
         </Routes>
       </div>
 

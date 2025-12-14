@@ -7,6 +7,8 @@ import Navbar from '../components/NavBar';
 import authService from '../services/authService';
 import toast from 'react-hot-toast';
 import { useAuth } from '../contexts/AuthContext';
+import { useGoogleLogin } from '@react-oauth/google';
+
 
 export default function Login({ isDark, toggleTheme }) {
   const navigate = useNavigate();
@@ -34,6 +36,7 @@ export default function Login({ isDark, toggleTheme }) {
       const response = await authService.login(formData);
       toast.success('Welcome back!');
       console.log("login succesfull")
+      console.log(response)
       localStorage.setItem("token", response.token);
 
       navigate('/api/dashboard');
@@ -44,6 +47,24 @@ export default function Login({ isDark, toggleTheme }) {
       setLoading(false);
     }
   };
+  const googleLogin = useGoogleLogin({
+  onSuccess: async (tokenResponse) => {
+    try {
+      await authService.googleLogin({
+        token: tokenResponse.access_token,
+      });
+      localStorage.setItem("token", tokenResponse.access_token);
+      toast.success('Logged in with Google!');
+      console.log(tokenResponse);
+      navigate('/api/dashboard');
+    } catch (err) {
+      toast.error('Google login failed');
+    }
+  },
+  onError: () => toast.error('Google login failed'),
+});
+
+
  
 
   return (
@@ -97,6 +118,19 @@ export default function Login({ isDark, toggleTheme }) {
           <Button type="submit" disabled={loading}>
             {loading ? 'Signing In...' : 'Sign In'}
           </Button>
+
+          <button type="button"
+            onClick={() => googleLogin()}
+            className="mt-6 w-full flex items-center justify-center gap-3
+                      border border-slate-300 dark:border-slate-700
+                      rounded-lg py-2 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <img
+            src="https://developers.google.com/identity/images/g-logo.png"
+            alt="Google"
+            className="w-5 h-5"
+          />
+          <span>Continue with Google</span>
+        </button>
 
           <p className={`text-sm mt-4 text-center ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Don't have an account?{' '}
