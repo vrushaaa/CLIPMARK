@@ -7,6 +7,10 @@ from app.models.user import User
 from authlib.integrations.flask_client import OAuth
 import os
 import requests
+from flask_mail import Message
+from app import mail
+from app.models.user import User
+
 
 
 auth = Blueprint('auth', __name__)
@@ -212,4 +216,59 @@ def google_login():
             "email": user.email
         }
     }), 200
+
+#forgot password 
+@auth.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = User.query.filter_by(email=email.lower()).first()
+
+    if not user:
+        return jsonify({"message": "If that email exists, a reset link was sent"}), 200
+
+    token = user.generate_reset_token()
+
+    reset_url = f"http://localhost:5173/auth/reset-password/{token}"
+
+    msg = Message(
+        subject="Reset Your Clipmark Password",
+        recipients=[user.email],
+        body=f"""
+Hi {user.name},
+
+Click the link below to reset your password:
+
+{reset_url}
+
+This link expires in 1 hour.
+"""
+    )
+
+    mail.send(msg)
+
+    return jsonify({"message": "Password reset link sent"}), 200
+
+#reset password
+@auth.route('/reset-password/<token>', methods=['POST'])
+def reset_password(token):
+    data = request.get_json()
+    password = data.get('password')
+
+    if not password:
+        return jsonify({"error": "Password required"}), 400
+
+    user = User.verify_reset_token(token)
+
+    if not user:
+        return jsonify({"error": "Invalid or expired token"}), 400
+
+    user.set_password(password)
+    db.session.commit()
+
+    return jsonify({"message": "Password reset successful"}), 200
 

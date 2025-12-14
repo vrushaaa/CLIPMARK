@@ -27,6 +27,22 @@ class User(UserMixin, db.Model):
         if not self.password_hash:
             return False
         return check_password_hash(self.password_hash, password)
+    def generate_reset_token(self):
+        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        return serializer.dumps(self.email, salt='password-reset')
+
+    @staticmethod
+    def verify_reset_token(token, expiration=3600):
+        serializer = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        try:
+            email = serializer.loads(
+                token,
+                salt='password-reset',
+                max_age=expiration
+            )
+        except:
+            return None
+        return User.query.filter_by(email=email).first()
 
 
     def to_dict(self):
@@ -39,3 +55,4 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}>'
+    
