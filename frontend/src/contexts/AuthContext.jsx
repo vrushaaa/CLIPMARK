@@ -67,6 +67,12 @@ export const AuthProvider = ({ children }) => {
     return !!user;
   };
 
+  const refreshUser = async () => {
+    const res = await api.get("/auth/me");
+    setUser(res.data.user);
+    localStorage.setItem("user", JSON.stringify(res.data.user));
+  };
+
   const value = {
     user,
     loading,
@@ -75,6 +81,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     isAuthenticated,
+    refreshUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

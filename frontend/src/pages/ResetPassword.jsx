@@ -27,6 +27,7 @@ export default function ResetPassword({ isDark, toggleTheme }) {
     }
   };
 
+  //return
   return (
     <>
       <Navbar />
