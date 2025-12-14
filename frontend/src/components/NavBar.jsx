@@ -8,9 +8,18 @@ import Button from "./Button";
 export default function Navbar({ toggleSidebar, isSidebarOpen }) {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
-  const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(localStorage.getItem("token"))
-  );
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsLoggedIn(Boolean(localStorage.getItem("token")));
+    };
+
+    checkAuth(); // run on mount
+
+    window.addEventListener("storage", checkAuth);
+    return () => window.removeEventListener("storage", checkAuth);
+  }, []);
 
   const location = useLocation();
   const navigate = useNavigate();
