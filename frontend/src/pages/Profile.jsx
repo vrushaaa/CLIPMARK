@@ -68,17 +68,21 @@ function Profile() {
         username: username,   // ← Send 'username' key
         email: userEmail,
       });
-
-      await refreshUser(); // ✅ sync context
-
       toast.success("Profile updated successfully!");
-      
+      await refreshUser(); 
+
+      // toast.success("Profile updated successfully!");
+      console.log("success")
       // Optionally update context or localStorage if needed
       // Your AuthContext might have a way to refresh user
     } catch (err) {
-      toast.error(err.error || "Failed to update profile");
+      // toast.error(err.error || "Failed to update profile");
+      console.log(err.error);
+
     } finally {
+      console.log("this is finally")
       setSaving(false);
+
     }
   };
 
