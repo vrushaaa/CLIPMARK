@@ -4,6 +4,7 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, bcrypt
 from app.models.user import User
+import re
 
 auth = Blueprint('auth', __name__)
 
@@ -121,7 +122,73 @@ def check_auth():
 
     return jsonify({"logged_in": False}), 200
 
+# # ----------------------------
+# # UPDATE PROFILE (PUT /auth/me)
+# # ----------------------------
+@auth.route('/me', methods=['PUT'])
+@login_required
+def update_profile():
+    data = request.get_json() or {}
 
+    updated = False
+
+    # Update username if provided
+    if 'username' in data:
+        new_username = data['username'].strip().lower()
+        if not new_username:
+            return jsonify({"error": "Username cannot be empty"}), 400
+            
+        if not re.match(r'^[a-z0-9_]{3,20}$', new_username):
+            return jsonify({"error": "Username must be 3-20 characters (letters, numbers, underscore only)"}), 400
+
+        existing = User.query.filter(
+            User.username == new_username,
+            User.id != current_user.id
+        ).first()
+        if existing:
+            return jsonify({"error": "Username already taken"}), 409
+
+        current_user.username = new_username
+        updated = True
+
+    # Update email if provided
+    email = data.get('email')
+    if email:
+        email = email.strip().lower()
+        if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+            return jsonify({"error": "Invalid email format"}), 400
+        
+        existing = User.query.filter(
+            User.email == email,
+            User.id != current_user.id
+        ).first()
+        if existing:
+            return jsonify({"error": "Email already registered"}), 409
+            
+        current_user.email = email
+        updated = True
+
+    if not updated:
+        return jsonify({
+            "message": "No changes made",
+            "user": current_user.to_dict()
+        }), 200
+
+    try:
+        db.session.commit()
+        
+        # Refresh session with updated user
+        login_user(User.query.get(current_user.id))
+        
+        return jsonify({
+            "message": "Profile updated successfully",
+            "user": current_user.to_dict()
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Failed to update profile"}), 500
+    
 # ----------------------------
 # ERROR HANDLERS (JSON ONLY)
 # ----------------------------

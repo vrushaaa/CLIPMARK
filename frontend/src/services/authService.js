@@ -60,6 +60,22 @@ const authService = {
   isAuthenticated: () => {
     return !!localStorage.getItem('user');
   },
+
+  // Update user profile (name and email)
+  updateProfile: async (profileData) => {
+    try {
+      const response = await api.put('/auth/me', profileData);
+      
+      // ← FIX: Use response.data.user
+      if (response.data.user) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+      }
+      
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || error;
+    }
+  },
 };
 
 export default authService;

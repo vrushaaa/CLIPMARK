@@ -6,21 +6,21 @@ import {
   Settings,
   BarChart2,
   Trash2,
-  Moon,
-  Sun,
+  Menu,
   Paperclip,
   Star,
   Archive,
-  Tag, Menu
 } from "lucide-react";
 
 import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
+import { useAuth } from "../contexts/AuthContext";  // ← ADD THIS
+import toast from "react-hot-toast";                 // ← ADD THIS (for feedback)
+import authService from "../services/authService";
 
 // --- Theme and Color Constants ---
 const PRIMARY_COLOR = "#48CAE4";
 const PRIMARY_TEXT_CLASS = "text-[#48CAE4]";
-const BG_MAIN_CLASS = "bg-slate-50 dark:bg-slate-900";
 const TEXT_TITLE_CLASS = "text-slate-900 dark:text-white";
 const TEXT_BODY_CLASS = "text-slate-600 dark:text-slate-400";
 const BUTTON_PRIMARY_CLASS =
@@ -28,34 +28,66 @@ const BUTTON_PRIMARY_CLASS =
 const BUTTON_SECONDARY_CLASS =
   "bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-600";
 
-// --- Profile Page Component ---
 function Profile() {
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  // Mock User Data and Stats
-  const [userName, setUserName] = useState("Jane Doe");
-  const [userEmail, setUserEmail] = useState("jane.doe@clipmark.com");
+  // Get real user from context
+  const { user, loading: authLoading, refreshUser } = useAuth();
+
+
+  // Local editable state
+  const [username, setUsername] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  
+  // Load user data on mount
+  useEffect(() => {
+    if (user) {
+      setUsername(user.username || "");  // ← Load real username
+      setUserEmail(user.email || "");
+    }
+  }, [user]);
+
+  // Mock stats (you can fetch these later from /api/dashboard or count bookmarks)
   const mockStats = {
     totalBookmarks: 187,
     favourites: 24,
     archived: 59,
-    lastActivity: "2 days ago",
   };
 
-  const handleUpdateProfile = () => {
-    // Mock function for update logic
-    console.log(`Updating profile for ${userName} (${userEmail})`);
+  // Save profile changes
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setSaving(true);
+    try {
+      await authService.updateProfile({
+        username: username,   // ← Send 'username' key
+        email: userEmail,
+      });
+
+      await refreshUser(); // ✅ sync context
+
+      toast.success("Profile updated successfully!");
+      
+      // Optionally update context or localStorage if needed
+      // Your AuthContext might have a way to refresh user
+    } catch (err) {
+      toast.error(err.error || "Failed to update profile");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handlePasswordChange = () => {
-    console.log("Initiating password change workflow...");
+    toast("Password change coming soon!");
   };
 
   const handleDeleteAccount = () => {
-    // Implement modal confirmation here instead of alert()
-    console.warn("Initiating account deletion process...");
+    toast.error("Account deletion not implemented yet");
   };
 
   const StatCard = ({ icon: Icon, value, label, colorClass }) => (
@@ -78,10 +110,7 @@ function Profile() {
   }) => (
     <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700 last:border-b-0">
       <div className="flex items-center gap-4">
-        <Icon
-          size={20}
-          className={isDanger ? "text-red-500" : PRIMARY_TEXT_CLASS}
-        />
+        <Icon size={20} className={isDanger ? "text-red-500" : PRIMARY_TEXT_CLASS} />
         <div>
           <p className={`font-medium ${TEXT_TITLE_CLASS}`}>{title}</p>
           <p className={`text-sm ${TEXT_BODY_CLASS} hidden sm:block`}>
@@ -102,12 +131,18 @@ function Profile() {
     </div>
   );
 
+  if (authLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading profile...</div>;
+  }
+
+  if (!user) {
+    return <div className="flex items-center justify-center min-h-screen">Not authenticated</div>;
+  }
+
   return (
     <>
-      {/* NAVBAR ALWAYS ON TOP */}
       <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
-      {/* MOBILE SIDEBAR TOGGLE BUTTON */}
       <button
         onClick={toggleSidebar}
         className="fixed top-3 left-3 z-50 p-2 rounded-full bg-[#48CAE4] text-slate-900 shadow-md lg:hidden transition hover:opacity-90"
@@ -116,33 +151,21 @@ function Profile() {
       </button>
 
       <div className="flex min-h-screen bg-[#e9f9fc] dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
-        {/* SIDEBAR CONTAINER (LIKE TAGS PAGE) */}
         <div
           className={`fixed inset-y-0 left-0 z-40 lg:relative lg:translate-x-0 transition-transform duration-300 ease-in-out ${
-            isSidebarOpen
-              ? "w-64 translate-x-0"
-              : "w-64 -translate-x-full lg:w-0"
+            isSidebarOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full lg:w-0"
           } overflow-y-auto shrink-0`}
         >
           <Sidebar />
-
-          {/* MOBILE OVERLAY */}
           {isSidebarOpen && (
-            <div
-              onClick={toggleSidebar}
-              className="fixed inset-0 bg-black/50 z-30 lg:hidden"
-            />
+            <div onClick={toggleSidebar} className="fixed inset-0 bg-black/50 z-30 lg:hidden" />
           )}
         </div>
 
-        {/* MAIN PROFILE CONTENT */}
         <main className="flex-1 max-w-4xl mx-auto px-4 py-8 md:py-12">
-          {/* HEADER */}
           <header className="mb-8 flex items-center gap-4">
             <User size={36} strokeWidth={2.5} className={PRIMARY_TEXT_CLASS} />
-            <h1
-              className={`text-3xl md:text-4xl font-extrabold ${TEXT_TITLE_CLASS}`}
-            >
+            <h1 className={`text-3xl md:text-4xl font-extrabold ${TEXT_TITLE_CLASS}`}>
               User Profile & Settings
             </h1>
           </header>
@@ -152,66 +175,38 @@ function Profile() {
             <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700">
               <div className="flex items-center gap-4 mb-6 pb-4 border-b dark:border-slate-700">
                 <User size={24} className={PRIMARY_TEXT_CLASS} />
-                <h2 className={`text-xl font-bold ${TEXT_TITLE_CLASS}`}>
-                  Account Details
-                </h2>
+                <h2 className={`text-xl font-bold ${TEXT_TITLE_CLASS}`}>Account Details</h2>
               </div>
 
-              {/* User Avatar */}
               <div className="flex items-center gap-6 mb-8">
                 <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[#48CAE4] to-cyan-300 flex items-center justify-center text-3xl font-bold text-slate-800 shadow-lg shrink-0">
-                  J
+                  {username.charAt(0).toUpperCase()}
                 </div>
                 <div>
-                  <h3 className={`text-2xl font-semibold ${TEXT_TITLE_CLASS}`}>
-                    {userName}
-                  </h3>
+                  <h3 className={`text-2xl font-semibold ${TEXT_TITLE_CLASS}`}>{username}</h3>
                   <p className={`text-base ${TEXT_BODY_CLASS}`}>{userEmail}</p>
                 </div>
               </div>
 
-              {/* FORM */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleUpdateProfile();
-                }}
-                className="space-y-4"
-              >
-                {/* Name */}
+              <form onSubmit={handleUpdateProfile} className="space-y-4">
                 <div>
-                  <label
-                    className={`block text-sm font-medium mb-1 ${TEXT_BODY_CLASS}`}
-                  >
-                    Full Name
-                  </label>
+                  <label className={`block text-sm font-medium mb-1 ${TEXT_BODY_CLASS}`}>Username</label>
                   <div className="relative">
-                    <User
-                      size={18}
-                      className={`absolute left-3 top-2 ${PRIMARY_TEXT_CLASS}`}
-                    />
+                    <User size={18} className={`absolute left-3 top-2 ${PRIMARY_TEXT_CLASS}`} />
                     <input
                       type="text"
-                      value={userName}
-                      onChange={(e) => setUserName(e.target.value)}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       className="w-full pl-10 pr-4 py-2 border rounded-lg bg-white dark:bg-slate-700 dark:text-white border-slate-300 dark:border-slate-600 focus:ring-2 focus:ring-[#48CAE4]"
                       required
                     />
                   </div>
                 </div>
 
-                {/* Email */}
                 <div>
-                  <label
-                    className={`block text-sm font-medium mb-1 ${TEXT_BODY_CLASS}`}
-                  >
-                    Email Address
-                  </label>
+                  <label className={`block text-sm font-medium mb-1 ${TEXT_BODY_CLASS}`}>Email Address</label>
                   <div className="relative">
-                    <Mail
-                      size={18}
-                      className={`absolute left-3 top-2 ${PRIMARY_TEXT_CLASS}`}
-                    />
+                    <Mail size={18} className={`absolute left-3 top-2 ${PRIMARY_TEXT_CLASS}`} />
                     <input
                       type="email"
                       value={userEmail}
@@ -225,14 +220,15 @@ function Profile() {
                 <div className="flex justify-end pt-2">
                   <button
                     type="submit"
-                    className={`px-6 py-2 rounded-lg ${BUTTON_PRIMARY_CLASS}`}
+                    disabled={saving}
+                    className={`px-6 py-2 rounded-lg ${BUTTON_PRIMARY_CLASS} ${saving ? "opacity-70" : ""}`}
                   >
-                    Save Changes
+                    {saving ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </form>
             </div>
-
+            
             {/* SECURITY SETTINGS */}
             <div className="p-6 md:p-8 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border">
               <div className="flex items-center gap-4 mb-4 pb-4">
