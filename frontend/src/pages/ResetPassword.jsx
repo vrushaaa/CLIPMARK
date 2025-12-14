@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Mail } from 'lucide-react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Lock } from 'lucide-react';
 import { Button, InputField, AuthLayout } from '../components/AuthComponents';
-import { Link } from 'react-router-dom';
 import Navbar from '../components/NavBar';
 import authService from '../services/authService';
 import toast from 'react-hot-toast';
 
-export default function ForgotPassword({ isDark, toggleTheme }) {
-  const [email, setEmail] = useState('');
+export default function ResetPassword({ isDark, toggleTheme }) {
+  const { token } = useParams();
+  const navigate = useNavigate();
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -15,10 +17,11 @@ export default function ForgotPassword({ isDark, toggleTheme }) {
     setLoading(true);
 
     try {
-      await authService.forgotPassword(email);
-      toast.success('If the email exists, a reset link has been sent.');
+      await authService.resetPassword(token, password);
+      toast.success('Password updated successfully!');
+      navigate('/auth/login');
     } catch (error) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error('Invalid or expired reset link');
     } finally {
       setLoading(false);
     }
@@ -30,24 +33,24 @@ export default function ForgotPassword({ isDark, toggleTheme }) {
       <AuthLayout
         isDark={isDark}
         toggleTheme={toggleTheme}
-        title="Reset Password"
-        subtitle="We'll send you instructions to reset it."
+        title="Set New Password"
+        subtitle="Create a new password for your account."
       >
         <form onSubmit={handleSubmit}>
           <InputField
-            label="Email Address"
-            type="email"
-            name="email"
-            placeholder="hello@clipmark.app"
-            icon={Mail}
+            label="New Password"
+            type="password"
+            name="password"
+            placeholder="Create a new password"
+            icon={Lock}
             isDark={isDark}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
           <Button type="submit" disabled={loading}>
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading ? 'Updating...' : 'Reset Password'}
           </Button>
 
           <div className="mt-4 text-center">
