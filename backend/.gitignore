@@ -1,0 +1,77 @@
+# -----------------------------------------
+# Python / Flask
+# -----------------------------------------
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+
+# Flask instance folder (if used)
+instance/
+*.log
+
+# Cache
+.cache/
+pytest_cache/
+
+# -------------------------------
+# Node / React (frontend)
+# -------------------------------
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Temp files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Env files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+prod.env
+
+# -------------------------------
+# OS / Editor garbage
+# -------------------------------
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VS Code
+.vscode/
+.history/
+
+# PyCharm
+.idea/
+
+# -----------------------------------------
+# Deployment / Docker (if applicable)
+# -----------------------------------------
+# Docker
+docker-compose.override.yml
+
+# AWS Elastic Beanstalk, etc
+.elasticbeanstalk/
+
+# Local development artifacts
+*.pid
+
+
+migrations/
