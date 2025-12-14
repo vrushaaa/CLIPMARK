@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { Menu, Bookmark, Tags } from "lucide-react";
+import toast from "react-hot-toast";
 import Sidebar from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import Button from "../components/Button";
-import { Menu, Bookmark, Tags } from "lucide-react";
+import DashboardCard from "../components/DashboardCard";
 import authService from "../services/authService";
-import toast from "react-hot-toast";
 
 export default function HomeDashboard() {
   const navigate = useNavigate();
@@ -15,25 +16,30 @@ export default function HomeDashboard() {
   useEffect(() => {
     // Check authentication
     const user = authService.getCurrentUser();
+
     if (!user) {
-      toast.error('Please login to continue');
-      navigate('/auth/login');
+      toast.error("Please login to continue");
+      navigate("/auth/login");
       return;
     }
-    setUsername(user.username || user.name || 'User');
+
+    setUsername(user.username || user.name || "User");
   }, [navigate]);
 
-  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
+  const toggleSidebar = useCallback(() => {
+    setIsSidebarOpen((prev) => !prev);
+  }, []);
 
   return (
     <>
       <NavBar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
 
-      <div className="flex min-h-screen bg-[#e9f9fc] dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
+      <div className="flex min-h-screen bg-[#e9f9fc] dark:bg-slate-900 text-slate-900 dark:text-white transition-colors">
         {/* Mobile Menu Button */}
+
         <button
           onClick={toggleSidebar}
-          className="fixed top-3 left-3 z-50 p-2 rounded-full bg-[#4CCCE6] text-slate-900 shadow-md lg:hidden transition hover:opacity-90"
+          className="fixed top-3 left-3 z-50 p-2 rounded-full bg-[#4CCCE6] text-slate-900 shadow-md lg:hidden"
         >
           <Menu size={24} />
         </button>
@@ -69,41 +75,29 @@ export default function HomeDashboard() {
             <span className="font-semibold text-[#1999b3] dark:text-[#4CCCE6]">
               ClipMark
             </span>{" "}
-            – your secure vault for managing bookmarks, tags, and saved
+            - your secure vault for managing bookmarks, tags, and saved
             resources.
           </p>
 
           {/* Feature Cards */}
-          <div className="flex flex-col md:flex-row items-center justify-center gap-8 mt-10 w-full max-w-4xl">
-            {/* Bookmarks Card */}
-            <a
-              href="/api/bookmarks"
-              className="w-full md:w-1/2 p-8 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-[#4CCCE6] hover:shadow-lg transition shadow-sm text-left"
-            >
-              <h3 className="text-2xl font-bold mb-3 text-[#1999b3] dark:text-[#4CCCE6] flex items-center gap-2">
-                <Bookmark size={26} /> Your Bookmarks
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                View and manage all your saved links in one place.
-              </p>
-            </a>
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6 w-full max-w-5xl">
+            <DashboardCard
+              to="/api/bookmarks"
+              icon={<Bookmark size={26} />}
+              title="Your Bookmarks"
+              description="View and manage all your saved links in one place."
+            />
 
-            {/* Tags Card */}
-            <a
-              href="/api/tags"
-              className="w-full md:w-1/2 p-8 rounded-2xl bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-[#4CCCE6] hover:shadow-lg transition shadow-sm text-left"
-            >
-              <h3 className="text-2xl font-bold mb-3 text-[#1999b3] dark:text-[#4CCCE6] flex items-center gap-2">
-                <Tags size={26} /> Tags
-              </h3>
-              <p className="text-slate-600 dark:text-slate-300">
-                Organize your bookmarks smarter using custom tags.
-              </p>
-            </a>
-          </div>
+            <DashboardCard
+              to="/api/tags"
+              icon={<Tags size={26} />}
+              title="Tags"
+              description="Organize your bookmarks smarter using custom tags."
+            />
+          </section>
 
           {/* CTA Section */}
-          <div className="mt-20 text-center">
+          <div className="mt-14 text-center">
             <h2 className="text-3xl font-bold text-[#1999b3] dark:text-[#4CCCE6] mb-4">
               Your ClipMark is ready!
             </h2>
