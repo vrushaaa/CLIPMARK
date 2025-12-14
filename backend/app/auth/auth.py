@@ -4,6 +4,15 @@ from flask import Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from app import db, bcrypt
 from app.models.user import User
+from authlib.integrations.flask_client import OAuth
+import os
+import requests
+from flask_mail import Message
+from app import mail
+from app.models.user import User
+
+
+
 import re
 from app.models.user_bookmark import UserBookmark
 auth = Blueprint('auth', __name__)
@@ -239,3 +248,126 @@ def conflict(e):
 def internal_error(e):
     db.session.rollback()
     return jsonify({"error": "Server error"}), 500
+
+# ----------------------------
+# GOOGLE LOGIN / SIGNUP
+# ----------------------------
+@auth.route('/google', methods=['POST'])
+def google_login():
+    if current_user.is_authenticated:
+        return jsonify({"message": "Already logged in"}), 200
+
+    data = request.get_json()
+    token = data.get('token')
+
+    if not token:
+        return jsonify({"error": "Google token required"}), 400
+
+    # 🔹 Fetch user info from Google using ACCESS TOKEN
+    google_response = requests.get(
+        "https://www.googleapis.com/oauth2/v3/userinfo",
+        headers={
+            "Authorization": f"Bearer {token}"
+        }
+    )
+
+    if google_response.status_code != 200:
+        return jsonify({"error": "Invalid Google token"}), 401
+
+    userinfo = google_response.json()
+
+    email = userinfo.get("email")
+    name = userinfo.get("name")
+
+    if not email:
+        return jsonify({"error": "Email not provided by Google"}), 400
+
+    # 🔹 Check if user exists
+    user = User.query.filter_by(email=email.lower()).first()
+
+    if not user:
+        username_base = email.split("@")[0].lower()
+        username = username_base
+        counter = 1
+
+        while User.query.filter_by(username=username).first():
+            username = f"{username_base}{counter}"
+            counter += 1
+
+        user = User(
+            name=name or username,
+            email=email.lower(),
+            username=username
+        )
+
+        user.password_hash = None  # Google users don't need password
+
+        db.session.add(user)
+        db.session.commit()
+
+    login_user(user)
+
+    return jsonify({
+        "message": "Google login successful",
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        }
+    }), 200
+
+#forgot password 
+@auth.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    data = request.get_json()
+    email = data.get('email')
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    user = User.query.filter_by(email=email.lower()).first()
+
+    if not user:
+        return jsonify({"message": "If that email exists, a reset link was sent"}), 200
+
+    token = user.generate_reset_token()
+
+    reset_url = f"http://localhost:5173/auth/reset-password/{token}"
+
+    msg = Message(
+        subject="Reset Your Clipmark Password",
+        recipients=[user.email],
+        body=f"""
+Hi {user.name},
+
+Click the link below to reset your password:
+
+{reset_url}
+
+This link expires in 1 hour.
+"""
+    )
+
+    mail.send(msg)
+
+    return jsonify({"message": "Password reset link sent"}), 200
+
+#reset password
+@auth.route('/reset-password/<token>', methods=['POST'])
+def reset_password(token):
+    data = request.get_json()
+    password = data.get('password')
+
+    if not password:
+        return jsonify({"error": "Password required"}), 400
+
+    user = User.verify_reset_token(token)
+
+    if not user:
+        return jsonify({"error": "Invalid or expired token"}), 400
+
+    user.set_password(password)
+    db.session.commit()
+
+    return jsonify({"message": "Password reset successful"}), 200
+

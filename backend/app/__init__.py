@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from config import Config
 import os
 from flask_cors import CORS
+from flask_mail import Mail
 
 
 
@@ -13,6 +14,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
+mail = Mail()
 
 def create_app():
     app = Flask(
@@ -29,6 +31,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
 
     login_manager.login_view = "None"
     # login_manager.login_message_category = None
