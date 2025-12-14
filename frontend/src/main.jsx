@@ -4,11 +4,14 @@ import "./index.css";
 import App from "./App.jsx";
 import AppProvider from "./contexts/AppProvider.jsx";
 import { Toaster } from 'react-hot-toast';
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AppProvider>
-      <App />
+      <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+        <App />
+      </GoogleOAuthProvider>
       <Toaster 
         position="top-right"
         toastOptions={{
