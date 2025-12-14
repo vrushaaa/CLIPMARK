@@ -260,7 +260,7 @@ function Profile() {
                 </h2>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <StatCard
                   icon={Paperclip}
                   value={mockStats.totalBookmarks}
@@ -279,12 +279,12 @@ function Profile() {
                   label="In Archive"
                   colorClass="text-indigo-500"
                 />
-                <StatCard
+                {/* <StatCard
                   icon={Settings}
                   value={mockStats.lastActivity}
                   label="Last Active"
                   colorClass="text-green-500"
-                />
+                /> */}
               </div>
             </div>
 
