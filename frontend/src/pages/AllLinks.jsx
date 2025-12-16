@@ -3,13 +3,22 @@ import Sidebar from "../components/Sidebar";
 import NavBar from "../components/NavBar";
 import BookmarkCard from "../components/BookmarkCard";
 import Button from "../components/Button";
-import { Menu, Plus, ChevronLeft, ChevronRight, Search, X } from "lucide-react";
+import {
+  Menu,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  X,
+  ArrowDownToLine,
+} from "lucide-react";
 import bookmarkService from "../services/bookmarkService";
 import QRModal from "../components/modals/QRModal";
 import DeleteModal from "../components/modals/DeleteModal";
 import AddBookmarkModal from "../components/modals/AddBookmarkModal";
 import EditBookmarkModal from "../components/modals/EditBookmarkModal";
 import Pagination from "../components/Pagination";
+import toast from "react-hot-toast";
 
 export default function Dashboard() {
   // Layout State
@@ -289,6 +298,15 @@ export default function Dashboard() {
     return () => clearTimeout(delay);
   }, [searchQuery]);
 
+  const handleExport = async () => {
+    try {
+      await bookmarkService.exportBookmarks();
+      toast.success("Bookmark exported ");
+    } catch (err) {
+      toast.error(err?.error || "Failed to export");
+    }
+  };
+
   return (
     <>
       {/* NAVIGATION */}
@@ -336,12 +354,22 @@ export default function Dashboard() {
                 </h1>
               </div>
 
-              <Button
-                onClick={handleAddLink}
-                className="flex items-center gap-2"
-              >
-                <Plus size={20} /> Add New Link
-              </Button>
+              <div className="flex gap-4">
+                <Button
+                  onClick={handleExport}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowDownToLine size={20} />
+                  Export
+                </Button>
+
+                <Button
+                  onClick={handleAddLink}
+                  className="flex items-center gap-2"
+                >
+                  <Plus size={20} /> Add New Link
+                </Button>
+              </div>
             </div>
 
             {/* Search */}
