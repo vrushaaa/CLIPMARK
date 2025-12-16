@@ -19,6 +19,7 @@ import AddBookmarkModal from "../components/modals/AddBookmarkModal";
 import EditBookmarkModal from "../components/modals/EditBookmarkModal";
 import Pagination from "../components/Pagination";
 import toast from "react-hot-toast";
+import { graffitiBurst } from "../utils/graffitiConfetti";
 
 export default function Dashboard() {
   // Layout State
@@ -27,7 +28,6 @@ export default function Dashboard() {
 
   // Data
   const [bookmarks, setBookmarks] = useState([]);
-  const [summary, setSummary] = useState(null);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -72,18 +72,8 @@ export default function Dashboard() {
     }
   };
 
-  const fetchSummary = async () => {
-    try {
-      const res = await bookmarkService.getDashboardSummary();
-      setSummary(res);
-    } catch {
-      /* ignore summary errors */
-    }
-  };
-
   useEffect(() => {
     fetchBookmarks();
-    fetchSummary();
   }, []);
 
   // ---------------------
@@ -130,6 +120,7 @@ export default function Dashboard() {
         )
       );
     } catch (err) {
+      console.log(err);
       alert("Failed to toggle favourite");
     }
   };
@@ -247,9 +238,12 @@ export default function Dashboard() {
         title: addTitle,
         notes: addNotes,
         // FIX: Always send array, filter empty tags
-        tags: addTags 
-          ? addTags.split(',').map(t => t.trim()).filter(Boolean) 
-          : [],  // ← This line ensures [] when blank
+        tags: addTags
+          ? addTags
+              .split(",")
+              .map((t) => t.trim())
+              .filter(Boolean)
+          : [], // ← This line ensures [] when blank
         archived: false,
       };
 
@@ -257,6 +251,8 @@ export default function Dashboard() {
 
       // Add new bookmark to UI
       setBookmarks((prev) => [res.bookmark, ...prev]);
+
+      graffitiBurst();
 
       // Close modal
       setAddModalOpen(false);
@@ -267,6 +263,7 @@ export default function Dashboard() {
       setAddNotes("");
       setAddTags("");
     } catch (err) {
+      console.log(err);
       alert("Failed to add bookmark");
     } finally {
       setAddLoading(false);

@@ -7,8 +7,7 @@ from config import Config
 import os
 from flask_cors import CORS
 from flask_mail import Mail
-
-
+from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()

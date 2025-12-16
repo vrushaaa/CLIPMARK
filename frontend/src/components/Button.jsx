@@ -8,7 +8,7 @@ export default function Button({
   ...props
 }) {
   const baseStyles =
-    "px-8 py-3 rounded-full text-lg font-bold transition-all duration-300 focus:outline-none";
+    "px-8 py-3 rounded-full text-lg font-bold transition-all duration-300 focus:outline-none trasition active:scale-95 hover:scale-[1.02]";
 
   const variants = {
     primary:

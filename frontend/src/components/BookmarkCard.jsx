@@ -154,15 +154,17 @@ function BookmarkCard({
             <button
               onClick={() => onToggleFavourite(id)}
               className={`
-      px-3 py-1 rounded-full flex items-center
-      border transition
-      ${
-        isFavourite
-          ? "bg-red-500/20 border-red-400 text-red-500"
-          : "bg-[var(--color-sky-aqua-800)] border-[var(--color-sky-aqua-600)] text-white"
-      }
-      hover:bg-red-500/30
-    `}
+                px-3 py-1 rounded-full flex items-center
+                border transition-transform
+                active:scale-125
+                ${isFavourite ? "heart-pop" : ""}
+                ${
+                  isFavourite
+                    ? "bg-red-500/20 border-red-400 text-red-500"
+                    : "bg-[var(--color-sky-aqua-800)] border-[var(--color-sky-aqua-600)] text-white"
+                }
+                hover:bg-red-500/30
+              `}
               aria-label="Toggle favourite"
             >
               {isFavourite ? (
