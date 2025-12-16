@@ -196,6 +196,38 @@ export default function Dashboard() {
   const [addTags, setAddTags] = useState("");
   const [addLoading, setAddLoading] = useState(false);
 
+  // const handleAddSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setAddLoading(true);
+
+  //   try {
+  //     const payload = {
+  //       url: addUrl,
+  //       title: addTitle,
+  //       notes: addNotes,
+  //       tags: addTags.split(",").map((t) => t.trim()),
+  //     };
+
+  //     const res = await bookmarkService.createBookmark(payload);
+
+  //     // Add new bookmark to UI
+  //     setBookmarks((prev) => [res.bookmark, ...prev]);
+
+  //     // Close modal
+  //     setAddModalOpen(false);
+
+  //     // Clear form
+  //     setAddUrl("");
+  //     setAddTitle("");
+  //     setAddNotes("");
+  //     setAddTags("");
+  //   } catch (err) {
+  //     alert("Failed to add bookmark");
+  //   } finally {
+  //     setAddLoading(false);
+  //   }
+  // };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     setAddLoading(true);
@@ -205,7 +237,11 @@ export default function Dashboard() {
         url: addUrl,
         title: addTitle,
         notes: addNotes,
-        tags: addTags.split(",").map((t) => t.trim()),
+        // FIX: Always send array, filter empty tags
+        tags: addTags 
+          ? addTags.split(',').map(t => t.trim()).filter(Boolean) 
+          : [],  // ← This line ensures [] when blank
+        archived: false,
       };
 
       const res = await bookmarkService.createBookmark(payload);

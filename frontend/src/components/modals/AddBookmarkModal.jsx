@@ -60,12 +60,20 @@ export default function AddBookmarkModal({
             className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-black"
           />
 
-          <input
+          {/* <input
             type="text"
             placeholder="Tags (comma separated)"
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700  dark:text-white text-blacks"
+          /> */}
+
+          <input
+            type="text"
+            placeholder="Tags (comma separated, e.g. python, web)"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            className="w-full p-3 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 dark:text-white text-black"
           />
 
           <div className="flex justify-end gap-4">
