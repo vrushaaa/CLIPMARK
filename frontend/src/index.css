@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
   --color-sky-aqua-50: #e9f9fc;
   --color-sky-aqua-100: #d3f2f8;
@@ -15,4 +14,32 @@
   --color-sky-aqua-800: #0d4c59;
   --color-sky-aqua-900: #07262c;
   --color-sky-aqua-950: #051b1f;
+}
+/* Modal animation */
+.modal-enter {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition: all 200ms ease-out;
+}
+
+.modal-exit {
+  opacity: 0;
+  transform: scale(0.95) translateY(8px);
+  transition: all 200ms ease-in;
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.heart-pop {
+  animation: heart-pop 300ms ease-out;
 }
