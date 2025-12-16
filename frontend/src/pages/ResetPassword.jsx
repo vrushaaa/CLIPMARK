@@ -5,6 +5,8 @@ import { Button, InputField, AuthLayout } from '../components/AuthComponents';
 import Navbar from '../components/NavBar';
 import authService from '../services/authService';
 import toast from 'react-hot-toast';
+import PasswordStrength from '../components/PasswordStrength';
+
 
 export default function ResetPassword({ isDark, toggleTheme }) {
   const { token } = useParams();
@@ -49,6 +51,7 @@ export default function ResetPassword({ isDark, toggleTheme }) {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <PasswordStrength password={password} isDark />
 
           <Button type="submit" disabled={loading}>
             {loading ? 'Updating...' : 'Reset Password'}

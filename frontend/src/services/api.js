@@ -29,13 +29,15 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Redirect to login on 401
+    const status = error.response?.status;
+    const url = error.config?.url;
+
+    if (status === 401 && !url?.includes("/auth/login")) {
       localStorage.removeItem('user');
       window.location.href = '/auth/login';
     }
-    return Promise.reject(error);
+
+    return Promise.reject(error.response?.data || error);
   }
 );
-
 export default api;

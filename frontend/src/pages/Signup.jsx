@@ -7,10 +7,13 @@ import Navbar from '../components/NavBar';
 import authService from '../services/authService';
 import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
+import PasswordStrength from "../components/PasswordStrength";
+
 
 export default function Signup({ isDark, toggleTheme }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [password, setPassword] = useState("");
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -107,11 +110,16 @@ export default function Signup({ isDark, toggleTheme }) {
             name="password"
             placeholder="Create a password" 
             // value={formData.password}
-            onChange={handleChange}
+            onChange={(e) => {
+              handleChange(e);
+              setPassword(e.target.value);
+            }}
             icon={Lock} 
             isDark={isDark}
             required
           />
+          <PasswordStrength password={password} isDark={isDark} />
+
 
           <Button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Create Account'}
