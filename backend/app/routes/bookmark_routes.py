@@ -258,51 +258,6 @@ def delete_bookmark(bookmark_id):
         db.session.rollback()
         return jsonify({"error": "Delete failed", "details": str(e)}), 500
 
-
-# EXPORT BOOKMARKS (HTML DOWNLOAD)
-# @bp.route('/export', methods=['GET'])
-# @login_required
-# def export_bookmarks():
-#     user_id = current_user.id
-
-#     bookmarks = db.session.query(Bookmark).join(UserBookmark)\
-#         .filter(UserBookmark.user_id == user_id).all()
-
-#     if not bookmarks:
-#         return jsonify({"error": "No bookmarks found"}), 404
-
-#     ist = pytz.timezone('Asia/Kolkata')
-
-#     html = """
-# <html>
-# <head>
-#   <title>ClipMark Export</title>
-#   <style>
-#     body { font-family: Arial; padding: 20px; }
-#     h1 { color: #1b98b1; }
-#     li { margin-bottom: 8px; }
-#   </style>
-# </head>
-# <body>
-# <h1>Your Bookmarks</h1>
-# <ul>
-# """
-
-
-#     for b in bookmarks:
-#         html += f"<li><a href='{b.url}'>{b.url}</a></li>"
-
-#     html += "</ul></body></html>"
-
-#     return Response(
-#         html,
-#         mimetype="text/html",
-#         headers={
-#             "Content-Disposition": f"attachment; filename=bookmarks_{datetime.now().strftime('%Y%m%d')}.html"
-#         }
-#     )
-
-
 # EXPORT BOOKMARKS (HTML DOWNLOAD)
 @bp.route('/export', methods=['GET'])
 @login_required
@@ -450,7 +405,7 @@ def list_tags():
 
     return jsonify(tags), 200
 
-# LIST ALL BOOKMARKS (NO JINJA)
+# LIST ALL BOOKMARKS 
 @bp.route('/bookmarks', methods=['GET'])
 @login_required
 def list_bookmarks():
@@ -461,10 +416,12 @@ def list_bookmarks():
     archived_filter = request.args.get('archived')
     favourite_filter = request.args.get('favourite')
 
+    # Base query
     query = db.session.query(Bookmark).join(UserBookmark).filter(
         UserBookmark.user_id == user_id
     )
 
+    # Apply filters
     if tag_filter:
         query = query.join(
             tag_user_bookmarks,
@@ -493,13 +450,14 @@ def list_bookmarks():
             UserBookmark.is_favourite == (favourite_filter == 'true')
         )
 
+    total = query.count()  
+
     bookmarks = query.order_by(UserBookmark.created_at.desc()).all()
 
     return jsonify({
         "bookmarks": [b.to_dict(user_id=user_id) for b in bookmarks],
-        "total": len(bookmarks)
+        "total": total  #
     }), 200
-
 
 # GENERATE QR
 @bp.route('/bookmarks/<int:bookmark_id>/qr', methods=['GET'])

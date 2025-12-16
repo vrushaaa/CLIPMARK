@@ -13,11 +13,11 @@ import {
   Tag,
 } from "lucide-react";
 
-import api from "../services/api"; 
+import api from "../services/api";
 import NavBar from "../components/NavBar";
 import Sidebar from "../components/Sidebar";
-import { useAuth } from "../contexts/AuthContext"; 
-import toast from "react-hot-toast"; 
+import { useAuth } from "../contexts/AuthContext";
+import toast from "react-hot-toast";
 import authService from "../services/authService";
 import tagService from "../services/tagService";
 import DeleteUser from "../components/modals/DeleteUser";
@@ -54,7 +54,7 @@ function Profile() {
   // Load user data on mount
   useEffect(() => {
     if (user) {
-      setUsername(user.username || ""); // ← Load real username
+      setUsername(user.username || ""); 
       setUserEmail(user.email || "");
     }
   }, [user]);
@@ -70,31 +70,27 @@ function Profile() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // This uses your existing /api/bookmarks endpoint with filters
         const [allRes, favRes, archRes, tagsRes] = await Promise.all([
-          bookmarkService.getAllBookmarks(), // total
-          bookmarkService.getAllBookmarks({ favourite: true }),
-          bookmarkService.getAllBookmarks({ archived: true }),
-          tagService.getAllTags(), // for total tags
+          bookmarkService.getAllBookmarks(),           
+          bookmarkService.getFavouriteBookmarks(),  
+          bookmarkService.getAllBookmarks({ archived: true }), 
+          tagService.getAllTags(),
         ]);
 
         setStats({
           totalBookmarks: allRes.total || 0,
           favourites: favRes.total || 0,
           archived: archRes.total || 0,
-          totalTags: tagsRes.length || 0,
+          totalTags: Array.isArray(tagsRes) ? tagsRes.length : 0,
         });
       } catch (err) {
-        console.error("Failed to load stats", err);
-        // Keep defaults or show error toast if you want
+        console.error("Stats fetch failed", err);
       }
     };
 
-    if (user) {
-      fetchStats();
-    }
+    if (user) fetchStats();
   }, [user]);
-  
+
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     if (!user) return;
@@ -109,7 +105,6 @@ function Profile() {
       await refreshUser();
 
       console.log("success");
-  
     } catch (err) {
       // toast.error(err.error || "Failed to update profile");
       console.log(err.error);
@@ -129,11 +124,9 @@ function Profile() {
       await api.delete("/auth/me");
 
       toast.success("Account deleted successfully");
-      // 🔥 REMOVE AUTH DATA
       localStorage.removeItem("token");
       localStorage.removeItem("user");
 
-      // 🔥 NOTIFY NAVBAR (same-tab update)
       window.dispatchEvent(new Event("auth-change"));
 
       // Redirect after delete

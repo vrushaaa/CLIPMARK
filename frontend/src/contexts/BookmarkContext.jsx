@@ -9,6 +9,7 @@ export const BookmarkProvider = ({ children }) => {
   const [archivedBookmarks, setArchivedBookmarks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [favouriteTotal, setFavouriteTotal] = useState(0);
 
   // Fetch dashboard bookmarks (non-archived)
   const fetchBookmarks = useCallback(async (params = {}) => {
@@ -62,10 +63,13 @@ export const BookmarkProvider = ({ children }) => {
     try {
       setLoading(true);
       const data = await bookmarkService.getAllBookmarks({
-        favourite: "true", // ✅ STRING
+        favourite: "true",
       });
       setFavouriteBookmarks(data.bookmarks || []);
+      setFavouriteTotal(data.total || 0);  
       return data;
+    } catch (err) {
+      throw err;
     } finally {
       setLoading(false);
     }
@@ -195,7 +199,6 @@ export const BookmarkProvider = ({ children }) => {
             const full = bookmarks.find((b) => b.id === id);
             return full ? [...prev, { ...full, isFavourite: true }] : prev;
           } else {
-            // ⭐ REMOVE FROM FAVOURITES PAGE
             return prev.filter((b) => b.id !== id);
           }
         });
@@ -226,6 +229,7 @@ export const BookmarkProvider = ({ children }) => {
     loading,
     error,
     favouriteBookmarks,
+    favouriteTotal,
     fetchFavouriteBookmarks,
     toggleFavourite,
     fetchBookmarks,
