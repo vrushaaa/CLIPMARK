@@ -30,7 +30,7 @@ const authService = {
       
       return response.data;
     } catch (error) {
-      throw error.response?.data || error;
+      throw error;
     }
   },
 
@@ -47,7 +47,7 @@ const authService = {
 
       return response.data;
     } catch (error) {
-      throw error.response?.data || error;
+      throw error;
     }
   },
 
@@ -91,7 +91,7 @@ const authService = {
       
       return response.data;
     } catch (error) {
-      throw error.response?.data || error;
+      throw error;
     }
   },
 
@@ -102,6 +102,10 @@ const authService = {
   resetPassword: async (token, password) => {
     return api.post(`/auth/reset-password/${token}`, { password });
   },
+
+  changePassword: (data) =>
+    api.post('/auth/change-password', data),
+
 
 };
 

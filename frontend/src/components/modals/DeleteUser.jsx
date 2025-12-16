@@ -16,7 +16,7 @@ export default function DeleteUser({ open, onClose, onConfirm, loading }) {
         <div className="flex flex-col items-center text-center gap-3">
           <Trash2 size={40} className="text-red-500" />
 
-          <h2 className="font-bold text-xl">Delete Account?</h2>
+          <h2 className="font-bold text-xl dark:text-white">Delete Account?</h2>
           <p className="text-slate-500">This action cannot be undone.</p>
 
           <div className="flex gap-4 mt-4">

@@ -28,7 +28,7 @@ export default function AddBookmarkModal({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-5">
-          <h2 className="text-xl font-bold">Add Bookmark</h2>
+          <h2 className="text-xl font-bold dark:text-white text-black">Add Bookmark</h2>
           <button onClick={onClose}>
             <X size={18} />
           </button>

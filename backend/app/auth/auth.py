@@ -371,3 +371,25 @@ def reset_password(token):
 
     return jsonify({"message": "Password reset successful"}), 200
 
+# change password
+@auth.route('/change-password', methods=['POST'])
+@login_required
+def change_password():
+    data = request.get_json()
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
+
+    if not old_password or not new_password:
+        return jsonify({"error": "All fields are required"}), 400
+
+    if not current_user.check_password(old_password):
+        return jsonify({"error": "Current password is incorrect"}), 400
+    
+    if not current_user.password_hash:
+        return jsonify({"error": "Password not set for Google account"}), 400
+
+
+    current_user.set_password(new_password)
+    db.session.commit()
+
+    return jsonify({"message": "Password updated successfully"}), 200

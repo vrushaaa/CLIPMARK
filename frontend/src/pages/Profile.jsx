@@ -22,6 +22,8 @@ import authService from "../services/authService";
 import tagService from "../services/tagService";
 import DeleteUser from "../components/modals/DeleteUser";
 import bookmarkService from "../services/bookmarkService";
+import ChangePassword from "../components/modals/ChangePassword";
+
 
 // --- Theme and Color Constants ---
 const PRIMARY_COLOR = "#48CAE4";
@@ -38,6 +40,7 @@ function Profile() {
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [passwordModalOpen, setPasswordModalOpen] = useState(false);
 
   // Get real user from context
   const { user, loading: authLoading, refreshUser } = useAuth();
@@ -120,7 +123,7 @@ function Profile() {
   };
 
   const handlePasswordChange = () => {
-    toast("Password change coming soon!");
+    setPasswordModalOpen(true);
   };
 
   const handleDeleteAccount = async () => {
@@ -406,6 +409,12 @@ function Profile() {
         onConfirm={handleDeleteAccount}
         loading={deleteLoading}
       />
+      <ChangePassword
+        open={passwordModalOpen}
+        onClose={() => setPasswordModalOpen(false)}
+      />
+
+
     </>
   );
 }

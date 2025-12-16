@@ -28,6 +28,7 @@ export default function Login({ isDark, toggleTheme }) {
   };
 
   const handleSubmit = async (e) => {
+    console.log("HANDLE SUBMIT FIRED");
     e.preventDefault();
     setLoading(true);
     console.log("EVENT NAME:", e.target.name);
@@ -35,8 +36,6 @@ export default function Login({ isDark, toggleTheme }) {
     try {
       const response = await authService.login(formData);
       toast.success('Welcome back!');
-      console.log("login succesfull")
-      console.log(response)
       localStorage.setItem("token", response.token);
 
       navigate('/api/dashboard');
@@ -64,8 +63,6 @@ export default function Login({ isDark, toggleTheme }) {
   onError: () => toast.error('Google login failed'),
 });
 
-
- 
 
   return (
     <>
