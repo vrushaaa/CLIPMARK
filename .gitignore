@@ -13,6 +13,7 @@ venv/
 env/
 .venv/
 
+
 # Flask instance folder (if used)
 instance/
 *.log
@@ -42,6 +43,7 @@ yarn-error.log*
 .env.development
 .env.production
 .env.test
+prod.env
 
 # -------------------------------
 # OS / Editor garbage
@@ -70,3 +72,7 @@ docker-compose.override.yml
 
 # Local development artifacts
 *.pid
+
+
+migrations/
+.hintrc

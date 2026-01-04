@@ -1,12 +1,12 @@
-from flask import Flask, jsonify
-from flask_cors import CORS
+# run.py
+import os
+import sys
 
-app = Flask(__name__)
-CORS(app)  # allow React to access Flask
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-@app.route("/test", methods=["GET"])
-def test():
-    return jsonify({"message": "Backend is working!"})
+from app import create_app
 
-if __name__ == "__main__":
+app = create_app()
+
+if __name__ == '__main__':
     app.run(debug=True)

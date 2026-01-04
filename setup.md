@@ -1,149 +1,99 @@
-### Frontend setup
+# Project Setup Guide
 
-1. npm create vite@latest frontend
-15vru@user MINGW64 ~/CLIPMARK (main)
-$ npm create vite@latest frontend
-Need to install the following packages:
-create-vite@8.2.0
-Ok to proceed? (y) y
+## Frontend Setup (React + Vite)
 
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: 'create-vite@8.2.0',
-npm warn EBADENGINE   required: { node: '^20.19.0 || >=22.12.0' },
-npm warn EBADENGINE   current: { node: 'v20.16.0', npm: '10.9.0' }
-npm warn EBADENGINE }
+### 1. Create Vite React Project
 
-> npx
-> create-vite frontend
+```bash
+npm create vite@latest frontend
+```
 
-│
-◇  Select a framework:
-│  React
-│
-◆  Select a variant:
-◇  Select a variant:
-│  JavaScript
-│
-◇  Use rolldown-vite (Experimental)?:
-│  No
-│
-◇  Install with npm and start now?
-│  Yes
-│
-◇  Scaffolding project in C:\Users\15vru\CLIPMARK\frontend...
-│
-◇  Installing dependencies with npm...
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: '@vitejs/plugin-react@5.1.1',
-npm warn EBADENGINE   required: { node: '^20.19.0 || >=22.12.0' },
-npm warn EBADENGINE   current: { node: 'v20.16.0', npm: '10.9.0' }
-npm warn EBADENGINE }
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: 'vite@7.2.4',
-npm warn EBADENGINE   required: { node: '^20.19.0 || >=22.12.0' },
-npm warn EBADENGINE   current: { node: 'v20.16.0', npm: '10.9.0' }
-npm warn EBADENGINE }
+Follow the prompts:
 
-added 157 packages, and audited 158 packages in 3m
+* **Framework:** React
+* **Variant:** JavaScript
+* **Use rolldown-vite:** No
+* **Install with npm and start:** Yes
 
-33 packages are looking for funding
-  run `npm fund` for details
+> **Note:** You may see warnings about unsupported Node engine. Vite requires **Node 20.19+** or **22.12+**.
 
-found 0 vulnerabilities
-│
-◇  Starting dev server...
+### 2. Start Dev Server
 
-◇  Starting dev server...
+After installation:
 
-> frontend@0.0.0 dev
-> vite
-> vite
+```bash
+cd frontend
+npm run dev
+```
 
-You are using Node.js 20.16.0. Vite requires Node.js version 20.19+ or 22.12+. Please upgrade your Node.js version.
+If you see:
 
-  VITE v7.2.4  ready in 1956 ms
+```
+You are using Node.js 20.16.0. Vite requires Node.js 20.19+ or 22.12+.
+```
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
+Update Node.js.
 
+### 3. Install Tailwind CSS
 
-15vru@user MINGW64 ~/CLIPMARK (main)
-$ cd frontend/
+Inside `frontend/`:
 
-15vru@user MINGW64 ~/CLIPMARK/frontend (main)
-$ npm install -D tailwindcss@3 postcss autoprefixer
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer
 npx tailwindcss init -p
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: '@vitejs/plugin-react@5.1.1',
-npm warn EBADENGINE   required: { node: '^20.19.0 || >=22.12.0' },
-npm warn EBADENGINE   current: { node: 'v20.16.0', npm: '10.9.0' }
-npm warn EBADENGINE }
-npm warn EBADENGINE Unsupported engine {
-npm warn EBADENGINE   package: 'vite@7.2.4',
-npm warn EBADENGINE   required: { node: '^20.19.0 || >=22.12.0' },
-npm warn EBADENGINE   current: { node: 'v20.16.0', npm: '10.9.0' }
-npm warn EBADENGINE }
+```
 
-added 63 packages, and audited 221 packages in 37s
+This creates:
 
-49 packages are looking for funding
-  run `npm fund` for details
+* `tailwind.config.js`
+* `postcss.config.js`
 
-found 0 vulnerabilities
+### 4. Run Frontend Again
 
-Created Tailwind CSS config file: tailwind.config.js
-Created PostCSS config file: postcss.config.js
+```bash
+npm run dev
+```
 
-15vru@user MINGW64 ~/CLIPMARK/frontend (main)
-$ npm run dev
+Access at:
 
-> frontend@0.0.0 dev
-> vite
+```
+http://localhost:5173/
+```
 
-You are using Node.js 20.16.0. Vite requires Node.js version 20.19+ or 22.12+. Please upgrade your Node.js version.
-11:55:43 pm [vite] (client) Re-optimizing dependencies because lockfile has changed
+---
 
-  VITE v7.2.4  ready in 2717 ms
+## Backend Setup (Flask)
 
-  ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
+### 1. Start Flask Server
 
+Inside backend folder:
 
-
-
-✅ Steps to Test Connection Between React (Frontend) and Flask (Backend)
-
-Below is a reliable workflow used in real projects.
-
-1️⃣ Start Your Flask Backend
-
-Inside your backend folder:
-
+```bash
 python app.py
+```
 
+Or using Flask CLI:
 
-OR, if you use Flask CLI:
-
+```bash
 flask run --debug
+```
 
+Backend runs at:
 
-Make sure it’s running on something like:
-
+```
 http://127.0.0.1:5000
+```
 
-2️⃣ Create a Simple Test Route in Flask
+### 2. Create Test API Route
 
-Create a basic API route in Flask to return JSON.
+`backend/app.py`:
 
-backend/app.py
-
+```python
 from flask import Flask, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)  # allow React to access Flask
+CORS(app)
 
 @app.route("/test", methods=["GET"])
 def test():
@@ -151,35 +101,41 @@ def test():
 
 if __name__ == "__main__":
     app.run(debug=True)
+```
 
+Restart backend and test at:
 
-Restart the backend.
+```
+http://localhost:5000/test
+```
 
-Now open:
-👉 http://localhost:5000/test
+Expected output:
 
-If you see:
-
+```json
 {"message": "Backend is working!"}
+```
 
+---
 
-then backend is OK.
+## Connecting Frontend and Backend
 
-3️⃣ Start the React Frontend
+### 1. Start React Frontend
 
-Navigate to the React folder:
-
+```bash
 npm start
+```
 
+Runs at:
 
-Usually runs at:
-
+```
 http://localhost:3000
+```
 
-4️⃣ Call the Flask API from React
+### 2. Call Flask API From React
 
-In React, update App.js:
+Edit `App.js`:
 
+```javascript
 import { useEffect, useState } from "react";
 
 function App() {
@@ -201,13 +157,22 @@ function App() {
 }
 
 export default App;
+```
 
-5️⃣ Open the React App in Browser
+### 3. Test in Browser
 
-Open:
+Visit:
 
-👉 http://localhost:3000
+```
+http://localhost:3000
+```
 
-If everything is correct, you should see:
+You should see:
 
+```
 Backend is working!
+```
+
+
+
+hello!
